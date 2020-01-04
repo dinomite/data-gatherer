@@ -10,17 +10,32 @@ import org.apache.commons.configuration2.EnvironmentConfiguration
 import org.apache.commons.configuration2.PropertiesConfiguration
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder
 import org.apache.commons.configuration2.builder.fluent.Parameters
+import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path
 
-class DataGatherer(private val config: Settings) {
+class DataGatherer(config: Settings) {
+    companion object {
+        private val logger = LoggerFactory.getLogger(this::class.java.name)
+    }
+
     private val services = listOf<Service>(
             TimeService(config)
     )
 
-    fun start() = services.forEach { it.startAsync() }
+    fun start() = services.forEach {
+        logger.info("Starting ${it.javaClass.simpleName}")
+        it.startAsync()
+        logger.debug("Started ${it.javaClass.simpleName}")
+    }
+
+    fun stop() = services.forEach {
+        logger.info("Stopping ${it.javaClass.simpleName}")
+        it.stopAsync()
+        logger.debug("Stopped ${it.javaClass.simpleName}")
+    }
+
     fun isRunning(): Boolean = services.firstOrNull { it.isRunning } != null
-    fun stop() = services.forEach { it.stopAsync() }
 }
 
 const val USAGE = """
