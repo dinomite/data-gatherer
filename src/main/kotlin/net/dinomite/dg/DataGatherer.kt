@@ -14,29 +14,13 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 class DataGatherer(private val config: Settings) {
-    private val services = mutableListOf<Service>()
+    private val services = listOf<Service>(
+            TimeService(config)
+    )
 
-    fun start() {
-        services.add(TimeService(config))
-
-        services.forEach {
-            it.startAsync()
-        }
-    }
-
-    fun isRunning(): Boolean {
-        val first = services.firstOrNull {
-            it.isRunning
-        }
-
-        return first != null
-    }
-
-    fun stop() {
-        services.forEach {
-            it.stopAsync()
-        }
-    }
+    fun start() = services.forEach { it.startAsync() }
+    fun isRunning(): Boolean = services.firstOrNull { it.isRunning } != null
+    fun stop() = services.forEach { it.stopAsync() }
 }
 
 const val USAGE = """
