@@ -2,10 +2,13 @@
 
 package net.dinomite.dg
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.util.concurrent.Service
 import com.google.common.util.concurrent.ServiceManager
 import kotlinx.coroutines.runBlocking
-import net.dinomite.dg.services.TimeService
+import net.dinomite.dg.services.hubitat.HubitatScheduleService
 import org.apache.commons.configuration2.CompositeConfiguration
 import org.apache.commons.configuration2.EnvironmentConfiguration
 import org.apache.commons.configuration2.PropertiesConfiguration
@@ -26,11 +29,16 @@ val STOP_DURATION: Duration = Duration.ofSeconds(5)
 
 val logger: Logger = LoggerFactory.getLogger("DataGatherer app")
 
+val objectMapper = ObjectMapper().apply {
+    registerModule(KotlinModule())
+    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+}
+
 fun main(args: Array<String>) {
     val config = buildConfiguration(args)
 
     val services = listOf<Service>(
-            TimeService(config)
+            HubitatScheduleService(config, objectMapper)
     )
 
     val serviceManager = ServiceManager(services)
