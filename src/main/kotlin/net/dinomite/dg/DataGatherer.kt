@@ -12,13 +12,12 @@ import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder
 import org.apache.commons.configuration2.builder.fluent.Parameters
 import java.nio.file.Files
 import java.nio.file.Path
-import java.time.Duration
 
-class DataGatherer {
+class DataGatherer(private val config: Settings) {
     private val services = mutableListOf<Service>()
 
     fun start() {
-        services.add(TimeService(Duration.ofSeconds(2)))
+        services.add(TimeService(config))
 
         services.forEach {
             it.startAsync()
@@ -49,9 +48,9 @@ fun main(args: Array<String>) {
     val config = CompositeConfiguration().apply {
         addConfiguration(EnvironmentConfiguration())
         addConfigFiles(args.getOrElse(0) { throw RuntimeException("CONFIG_DIR is required\n$USAGE") }, this)
-    }
+    }.let { Settings(it) }
 
-    val app = DataGatherer()
+    val app = DataGatherer(config)
     Runtime.getRuntime().addShutdownHook(shutdownHook(app))
 
     app.start()
