@@ -2,7 +2,7 @@ package net.dinomite.dg
 
 import kotlin.test.Test
 
-class AppTest {
+class DataGathererTest {
     @Test fun testAppHasAGreeting() {
     }
 }

@@ -30,5 +30,5 @@ tasks.withType<KotlinCompile> {
 }
 
 application {
-    mainClassName = "net.dinomite.dg.AppKt"
+    mainClassName = "net.dinomite.dg.DataGathererKt"
 }

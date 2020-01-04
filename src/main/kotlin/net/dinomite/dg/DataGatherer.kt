@@ -14,7 +14,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.time.Duration
 
-class App {
+class DataGatherer {
     private val services = mutableListOf<Service>()
 
     fun start() {
@@ -42,7 +42,7 @@ class App {
 
 const val USAGE = """
 USAGE:
-    AppKt CONFIG_DIR
+    DataGathererKt CONFIG_DIR
 """
 
 fun main(args: Array<String>) {
@@ -51,7 +51,7 @@ fun main(args: Array<String>) {
         addConfigFiles(args.getOrElse(0) { throw RuntimeException("CONFIG_DIR is required\n$USAGE") }, this)
     }
 
-    val app = App()
+    val app = DataGatherer()
     Runtime.getRuntime().addShutdownHook(shutdownHook(app))
 
     app.start()
@@ -75,10 +75,10 @@ fun addConfigFiles(configDir: String, compositeConfiguration: CompositeConfigura
             }
 }
 
-private fun shutdownHook(app: App) = object : Thread() {
+private fun shutdownHook(dataGatherer: DataGatherer) = object : Thread() {
     override fun run() = runBlocking {
         println("Shutting down")
-        app.stop()
+        dataGatherer.stop()
         println("Done")
     }
 }
