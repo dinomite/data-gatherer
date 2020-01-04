@@ -45,10 +45,7 @@ USAGE:
 """
 
 fun main(args: Array<String>) {
-    val config = CompositeConfiguration().apply {
-        addConfiguration(EnvironmentConfiguration())
-        addConfigFiles(args.getOrElse(0) { throw RuntimeException("CONFIG_DIR is required\n$USAGE") }, this)
-    }.let { Settings(it) }
+    val config = buildConfiguration(args)
 
     val app = DataGatherer(config)
     Runtime.getRuntime().addShutdownHook(shutdownHook(app))
@@ -59,19 +56,23 @@ fun main(args: Array<String>) {
     }
 }
 
-fun addConfigFiles(configDir: String, compositeConfiguration: CompositeConfiguration) {
-    Files.newDirectoryStream(Path.of(configDir))
-            .filter { it.toString().endsWith("properties") }
-            .sortedDescending()
-            .forEach { propertiesFile ->
-                compositeConfiguration.addConfiguration(
-                        FileBasedConfigurationBuilder(PropertiesConfiguration::class.java).apply {
-                            configure(Parameters().properties().apply {
-                                setFileName(propertiesFile.toString())
-                            })
-                        }.configuration
-                )
-            }
+private fun buildConfiguration(args: Array<String>): Settings {
+    return CompositeConfiguration().apply {
+        addConfiguration(EnvironmentConfiguration())
+        val configPath = Path.of(args.getOrElse(0) { throw RuntimeException("CONFIG_DIR is required\n$USAGE") })
+        Files.newDirectoryStream(configPath)
+                .filter { it.toString().endsWith("properties") }
+                .sortedDescending()
+                .forEach { propertiesFile ->
+                    this.addConfiguration(
+                            FileBasedConfigurationBuilder(PropertiesConfiguration::class.java).apply {
+                                configure(Parameters().properties().apply {
+                                    setFileName(propertiesFile.toString())
+                                })
+                            }.configuration
+                    )
+                }
+    }.let { Settings(it) }
 }
 
 private fun shutdownHook(dataGatherer: DataGatherer) = object : Thread() {
