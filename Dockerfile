@@ -14,7 +14,8 @@ ENV PATH $PATH:$JAVA_HOME/bin
 
 COPY ./docker-entrypoint.sh /data-gatherer/
 
+ADD config /data-gatherer/config
 ADD build/distributions/data-gatherer.tar /data-gatherer/
 
 WORKDIR /data-gatherer/
-ENTRYPOINT ["./docker-entrypoint.sh"]
+ENTRYPOINT ["./docker-entrypoint.sh", "config"]

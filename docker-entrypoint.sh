@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 set -ex
 
-./data-gatherer/bin/data-gatherer run
+./data-gatherer/bin/data-gatherer "$@"
