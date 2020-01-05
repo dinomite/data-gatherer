@@ -1,27 +1,20 @@
 package net.dinomite.dg.services
 
-import com.google.common.util.concurrent.AbstractScheduledService
-import kotlinx.coroutines.runBlocking
-import net.dinomite.dg.DataGathererConfig
-import net.dinomite.dg.emon.EmonClient
 import net.dinomite.dg.emon.EmonUpdate
 import net.dinomite.dg.hubitat.HubitatClient
 import org.slf4j.LoggerFactory
-import java.time.Duration.ZERO
 
-@Suppress("UnstableApiUsage")
-class HubitatScheduleService(private val config: DataGathererConfig,
-                             private val hubitatClient: HubitatClient,
-                             private val emonClient: EmonClient) : AbstractScheduledService() {
+class HubitatEmonUpdater(private val node: String,
+                         private val devices: List<String>,
+                         private val hubitatClient: HubitatClient) : EmonUpdateProducer {
     companion object {
         private val logger = LoggerFactory.getLogger(this::class.java.name)
     }
 
-    private val devices = config.HUBITAT_DEVICES
-
-    override fun scheduler(): Scheduler = Scheduler.newFixedRateSchedule(ZERO, config.SCHEDULED_SERVICE_INTERVAL)
-
-    override fun runOneIteration() = runBlocking {
+    /**
+     * Retrieve power information for each device ID from Hubitat
+     */
+    override suspend fun buildUpdate(): EmonUpdate {
         val updates: Map<String, String> = devices
                 .map { deviceId ->
                     val device = hubitatClient.retrieveDevice(deviceId)
@@ -44,6 +37,6 @@ class HubitatScheduleService(private val config: DataGathererConfig,
                 .mapKeys { it.key as String }
                 .mapValues { it.value as String }
 
-        emonClient.sendUpdate(EmonUpdate(config.EMON_NODE, updates))
+        return EmonUpdate(node, updates)
     }
 }

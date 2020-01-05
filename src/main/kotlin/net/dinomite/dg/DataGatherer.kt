@@ -10,7 +10,8 @@ import com.google.common.util.concurrent.ServiceManager
 import kotlinx.coroutines.runBlocking
 import net.dinomite.dg.emon.EmonClient
 import net.dinomite.dg.hubitat.HubitatClient
-import net.dinomite.dg.services.HubitatScheduleService
+import net.dinomite.dg.services.EmonScheduleService
+import net.dinomite.dg.services.HubitatEmonUpdater
 import org.apache.commons.configuration2.CompositeConfiguration
 import org.apache.commons.configuration2.PropertiesConfiguration
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder
@@ -39,10 +40,12 @@ val objectMapper = ObjectMapper().apply {
 fun main(args: Array<String>) {
     val config = buildConfiguration(args)
 
-    val hubitatClient = HubitatClient(config)
     val emonClient = EmonClient(config)
+    val hubitatClient = HubitatClient(config)
+    val hubitatProducer = HubitatEmonUpdater(config.EMON_NODE, config.HUBITAT_DEVICES, hubitatClient)
+
     val services = listOf<Service>(
-            HubitatScheduleService(config, hubitatClient, emonClient)
+            EmonScheduleService(config, hubitatProducer, emonClient)
     )
 
     val serviceManager = ServiceManager(services)
