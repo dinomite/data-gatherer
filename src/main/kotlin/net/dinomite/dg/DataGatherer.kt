@@ -23,13 +23,13 @@ import java.nio.file.Path
 import java.time.Duration
 import java.util.concurrent.TimeoutException
 
-const val USAGE = """
+private val logger: Logger = LoggerFactory.getLogger("DataGatherer app")
+
+private const val USAGE = """
 USAGE:
     DataGathererKt CONFIG_DIR
 """
-val STOP_DURATION: Duration = Duration.ofSeconds(5)
-
-val logger: Logger = LoggerFactory.getLogger("DataGatherer app")
+private val STOP_DURATION: Duration = Duration.ofSeconds(5)
 
 val objectMapper = ObjectMapper().apply {
     registerModule(KotlinModule())
