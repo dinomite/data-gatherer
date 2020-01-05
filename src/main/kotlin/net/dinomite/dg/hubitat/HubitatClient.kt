@@ -3,11 +3,11 @@ package net.dinomite.dg.hubitat
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.coroutines.awaitObjectResult
-import net.dinomite.dg.Settings
+import net.dinomite.dg.DataGathererConfig
 import net.dinomite.dg.objectMapper
 
-class HubitatClient(config: Settings) {
-    private val baseUrl = with(config) { "$HUBITAT_SCHEME://$HUBITAT_HOST$HUBITAT_DEVICE_BASE_PATH" }
+class HubitatClient(config: DataGathererConfig) {
+    private val baseUrl = with(config) { "$HUBITAT_SCHEME://$HUBITAT_HOST/$HUBITAT_DEVICE_BASE_PATH" }
     private val accessToken = config.HUBITAT_ACCESS_TOKEN
 
     suspend fun retrieveDevice(deviceId: String): Device {

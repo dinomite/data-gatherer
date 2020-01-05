@@ -8,6 +8,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.util.concurrent.Service
 import com.google.common.util.concurrent.ServiceManager
 import kotlinx.coroutines.runBlocking
+import net.dinomite.dg.emon.EmonClient
 import net.dinomite.dg.hubitat.HubitatClient
 import net.dinomite.dg.services.HubitatScheduleService
 import org.apache.commons.configuration2.CompositeConfiguration
@@ -39,8 +40,9 @@ fun main(args: Array<String>) {
     val config = buildConfiguration(args)
 
     val hubitatClient = HubitatClient(config)
+    val emonClient = EmonClient(config)
     val services = listOf<Service>(
-            HubitatScheduleService(config, hubitatClient)
+            HubitatScheduleService(config, hubitatClient, emonClient)
     )
 
     val serviceManager = ServiceManager(services)
@@ -56,7 +58,7 @@ fun main(args: Array<String>) {
     serviceManager.awaitStopped()
 }
 
-private fun buildConfiguration(args: Array<String>): Settings {
+private fun buildConfiguration(args: Array<String>): DataGathererConfig {
     return CompositeConfiguration().apply {
         addConfiguration(EnvironmentConfiguration())
         val configPath = Path.of(args.getOrElse(0) { throw RuntimeException("CONFIG_DIR is required\n$USAGE") })
@@ -72,7 +74,7 @@ private fun buildConfiguration(args: Array<String>): Settings {
                             }.configuration
                     )
                 }
-    }.let { Settings(it) }
+    }.let { DataGathererConfig(it) }
 }
 
 private fun shutdownHook(serviceManager: ServiceManager) = object : Thread() {
