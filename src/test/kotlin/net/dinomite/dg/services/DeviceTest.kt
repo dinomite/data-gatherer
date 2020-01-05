@@ -1,7 +1,7 @@
 package net.dinomite.dg.services
 
+import net.dinomite.dg.hubitat.Device
 import net.dinomite.dg.objectMapper
-import net.dinomite.dg.services.hubitat.Device
 import org.junit.jupiter.api.Test
 
 internal class DeviceTest {

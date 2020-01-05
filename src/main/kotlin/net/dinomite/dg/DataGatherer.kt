@@ -8,7 +8,8 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.util.concurrent.Service
 import com.google.common.util.concurrent.ServiceManager
 import kotlinx.coroutines.runBlocking
-import net.dinomite.dg.services.hubitat.HubitatScheduleService
+import net.dinomite.dg.hubitat.HubitatClient
+import net.dinomite.dg.services.HubitatScheduleService
 import org.apache.commons.configuration2.CompositeConfiguration
 import org.apache.commons.configuration2.EnvironmentConfiguration
 import org.apache.commons.configuration2.PropertiesConfiguration
@@ -37,8 +38,9 @@ val objectMapper = ObjectMapper().apply {
 fun main(args: Array<String>) {
     val config = buildConfiguration(args)
 
+    val hubitatClient = HubitatClient(config)
     val services = listOf<Service>(
-            HubitatScheduleService(config, objectMapper)
+            HubitatScheduleService(config, hubitatClient)
     )
 
     val serviceManager = ServiceManager(services)
