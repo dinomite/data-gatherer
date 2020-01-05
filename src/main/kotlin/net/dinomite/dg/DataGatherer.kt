@@ -12,10 +12,10 @@ import net.dinomite.dg.emon.EmonClient
 import net.dinomite.dg.hubitat.HubitatClient
 import net.dinomite.dg.services.HubitatScheduleService
 import org.apache.commons.configuration2.CompositeConfiguration
-import org.apache.commons.configuration2.EnvironmentConfiguration
 import org.apache.commons.configuration2.PropertiesConfiguration
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder
 import org.apache.commons.configuration2.builder.fluent.Parameters
+import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
@@ -59,8 +59,11 @@ fun main(args: Array<String>) {
 }
 
 private fun buildConfiguration(args: Array<String>): DataGathererConfig {
+    val params = Parameters().properties().apply {
+        setListDelimiterHandler(DefaultListDelimiterHandler(','))
+    }
+
     return CompositeConfiguration().apply {
-        addConfiguration(EnvironmentConfiguration())
         val configPath = Path.of(args.getOrElse(0) { throw RuntimeException("CONFIG_DIR is required\n$USAGE") })
         Files.newDirectoryStream(configPath)
                 .filter { it.toString().endsWith("properties") }
@@ -68,7 +71,7 @@ private fun buildConfiguration(args: Array<String>): DataGathererConfig {
                 .forEach { propertiesFile ->
                     this.addConfiguration(
                             FileBasedConfigurationBuilder(PropertiesConfiguration::class.java).apply {
-                                configure(Parameters().properties().apply {
+                                configure(params.apply {
                                     setFileName(propertiesFile.toString())
                                 })
                             }.configuration
