@@ -25,18 +25,23 @@ class HubitatScheduleService(private val config: DataGathererConfig,
         val updates: Map<String, String> = devices
                 .map { deviceId ->
                     val device = hubitatClient.retrieveDevice(deviceId)
-                    val power = device.attributes.first { it.name == "power" }.intValue()
+                    if (device == null) {
+                        null to null
+                    } else {
+                        val power = device.attribute("power").intValue()
 
-                    logger.debug("Power usage for ${device.name}: $power")
-                    "${device.reportingName}_power" to power?.toString()
+                        logger.debug("Power usage for ${device.name}: $power")
+                        "${device.reportingName}_power" to power?.toString()
+                    }
                 }
                 .toMap()
                 .filter { (key, value) ->
-                    if (value == null) {
+                    if (key == null || value == null) {
                         logger.warn("Dropping update for $key because value is null")
                     }
                     value != null
                 }
+                .mapKeys { it.key as String }
                 .mapValues { it.value as String }
 
         emonClient.sendUpdate(EmonUpdate(config.EMON_NODE, updates))

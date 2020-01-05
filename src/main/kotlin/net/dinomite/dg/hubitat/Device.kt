@@ -5,6 +5,8 @@ import net.dinomite.dg.hubitat.Device.Attribute.DataType.NUMBER
 data class Device(val id: Int, val name: String, val attributes: List<Attribute>) {
     val reportingName by lazy { name.replace(' ', '_').toLowerCase() }
 
+    fun attribute(name: String) = attributes.first { it.name == name }
+
     data class Attribute(val name: String,
                          val currentValue: String?,
                          val dataType: DataType) {
