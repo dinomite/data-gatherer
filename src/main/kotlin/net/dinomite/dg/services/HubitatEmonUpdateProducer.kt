@@ -23,27 +23,23 @@ class HubitatEmonUpdateProducer(private val node: String,
      * Retrieve power information for each device ID from Hubitat
      */
     override suspend fun buildUpdate(): EmonUpdate {
-        val updates: Map<String, String> = retrieveDevices()
-                .map { (deviceId, device) ->
+        val updates = retrieveDevices()
+                .mapNotNull { (deviceId, device) ->
                     if (device == null) {
-                        deviceId to null
+                        logger.warn("Dropping update for $deviceId because it is null")
+                        null
                     } else {
                         val power = device.attribute("power").intValue()
-
-                        logger.debug("Power usage for ${device.name}: $power")
-                        "${device.reportingName}_power" to power?.toString()
+                        if (power == null) {
+                            logger.warn("Power value for <${device.identity()}> is null")
+                            null
+                        } else {
+                            logger.debug("Power usage for ${device.identity()}: $power")
+                            "${device.reportingName}_power" to power.toString()
+                        }
                     }
                 }
                 .toMap()
-                .filter { (key, value) ->
-                    if (value == null) {
-                        logger.warn("Dropping update for $key because value is null")
-                        false
-                    } else {
-                        true
-                    }
-                }
-                .mapValues { it.value as String }
 
         return EmonUpdate(node, updates)
     }
