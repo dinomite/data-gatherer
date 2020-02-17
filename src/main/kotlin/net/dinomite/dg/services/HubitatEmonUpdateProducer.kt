@@ -1,6 +1,11 @@
 package net.dinomite.dg.services
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 import net.dinomite.dg.emon.EmonUpdate
+import net.dinomite.dg.hubitat.Device
 import net.dinomite.dg.hubitat.HubitatClient
 import org.slf4j.LoggerFactory
 
@@ -18,11 +23,10 @@ class HubitatEmonUpdateProducer(private val node: String,
      * Retrieve power information for each device ID from Hubitat
      */
     override suspend fun buildUpdate(): EmonUpdate {
-        val updates: Map<String, String> = devices
-                .map { deviceId ->
-                    val device = hubitatClient.retrieveDevice(deviceId)
+        val updates: Map<String, String> = retrieveDevices()
+                .map { (deviceId, device) ->
                     if (device == null) {
-                        null to null
+                        deviceId to null
                     } else {
                         val power = device.attribute("power").intValue()
 
@@ -32,14 +36,23 @@ class HubitatEmonUpdateProducer(private val node: String,
                 }
                 .toMap()
                 .filter { (key, value) ->
-                    if (key == null || value == null) {
+                    if (value == null) {
                         logger.warn("Dropping update for $key because value is null")
+                        false
+                    } else {
+                        true
                     }
-                    value != null
                 }
-                .mapKeys { it.key as String }
                 .mapValues { it.value as String }
 
         return EmonUpdate(node, updates)
+    }
+
+    private suspend fun retrieveDevices(): Map<String, Device?> = withContext(Dispatchers.IO) {
+        devices.map { deviceId ->
+                    async { deviceId to hubitatClient.retrieveDevice(deviceId) }
+                }
+                .awaitAll()
+                .toMap()
     }
 }
