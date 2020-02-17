@@ -11,7 +11,7 @@ import kotlinx.coroutines.runBlocking
 import net.dinomite.dg.emon.EmonClient
 import net.dinomite.dg.hubitat.HubitatClient
 import net.dinomite.dg.services.EmonScheduleService
-import net.dinomite.dg.services.HubitatEmonUpdater
+import net.dinomite.dg.services.HubitatEmonUpdateProducer
 import org.apache.commons.configuration2.CompositeConfiguration
 import org.apache.commons.configuration2.PropertiesConfiguration
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder
@@ -37,18 +37,24 @@ val objectMapper = ObjectMapper().apply {
     configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 }
 
+/**
+ * The services to run
+ */
+fun buildServices(config: DataGathererConfig): List<Service> = listOf<Service>(
+        emonScheduleService(config)
+)
+
+private fun emonScheduleService(config: DataGathererConfig): EmonScheduleService {
+    val emonClient = EmonClient(config)
+    val hubitatClient = HubitatClient(config)
+    val hubitatProducer = HubitatEmonUpdateProducer(config.EMON_NODE, config.HUBITAT_DEVICES, hubitatClient)
+    return EmonScheduleService(config, hubitatProducer, emonClient)
+}
+
 fun main(args: Array<String>) {
     val config = buildConfiguration(args)
 
-    val emonClient = EmonClient(config)
-    val hubitatClient = HubitatClient(config)
-    val hubitatProducer = HubitatEmonUpdater(config.EMON_NODE, config.HUBITAT_DEVICES, hubitatClient)
-
-    val services = listOf<Service>(
-            EmonScheduleService(config, hubitatProducer, emonClient)
-    )
-
-    val serviceManager = ServiceManager(services)
+    val serviceManager = ServiceManager(buildServices(config))
     serviceManager.addListener(object : ServiceManager.Listener() {
         override fun failure(service: Service) {
             logger.warn("Failed to stop ${service.javaClass.simpleName}")

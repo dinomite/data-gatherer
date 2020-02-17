@@ -4,9 +4,12 @@ import net.dinomite.dg.emon.EmonUpdate
 import net.dinomite.dg.hubitat.HubitatClient
 import org.slf4j.LoggerFactory
 
-class HubitatEmonUpdater(private val node: String,
-                         private val devices: List<String>,
-                         private val hubitatClient: HubitatClient) : EmonUpdateProducer {
+/**
+ * Pulls information from Hubitat devices and packages it into EmonUpdates
+ */
+class HubitatEmonUpdateProducer(private val node: String,
+                                private val devices: List<String>,
+                                private val hubitatClient: HubitatClient) : EmonUpdateProducer {
     companion object {
         private val logger = LoggerFactory.getLogger(this::class.java.name)
     }
