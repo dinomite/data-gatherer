@@ -7,7 +7,7 @@ data class Device(val id: Int, val name: String, val attributes: List<Attribute>
 
     fun attribute(name: String) = attributes.first { it.name == name }
 
-    fun identity() = "$id: $name"
+    fun identity() = "$id—$name"
 
     data class Attribute(val name: String,
                          val currentValue: String?,
