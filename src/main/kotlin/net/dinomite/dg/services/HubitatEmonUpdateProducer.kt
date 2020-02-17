@@ -45,9 +45,7 @@ class HubitatEmonUpdateProducer(private val node: String,
     }
 
     private suspend fun retrieveDevices(): Map<String, Device?> = withContext(Dispatchers.IO) {
-        devices.map { deviceId ->
-                    async { deviceId to hubitatClient.retrieveDevice(deviceId) }
-                }
+        devices.map { deviceId -> async { deviceId to hubitatClient.retrieveDevice(deviceId) } }
                 .awaitAll()
                 .toMap()
     }
