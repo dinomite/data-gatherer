@@ -24,7 +24,7 @@ RUN ./gradlew tasks > /dev/null
 
 COPY /src ./src
 
-RUN ./gradlew distTar
+RUN ./gradlew build distTar --no-daemon --stacktrace
 
 RUN tar xf build/distributions/data-gatherer.tar
 
