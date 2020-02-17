@@ -41,10 +41,10 @@ val objectMapper = ObjectMapper().apply {
  * The services to run
  */
 fun buildServices(config: DataGathererConfig): List<Service> = listOf<Service>(
-        emonScheduleService(config)
+        hubitatToEmonReportingService(config)
 )
 
-private fun emonScheduleService(config: DataGathererConfig): EmonScheduleService {
+private fun hubitatToEmonReportingService(config: DataGathererConfig): EmonScheduleService {
     val emonClient = EmonClient(config)
     val hubitatClient = HubitatClient(config)
     val hubitatProducer = HubitatEmonUpdateProducer(config.EMON_NODE, config.HUBITAT_DEVICES, hubitatClient)
