@@ -8,10 +8,6 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.util.concurrent.Service
 import com.google.common.util.concurrent.ServiceManager
 import kotlinx.coroutines.runBlocking
-import net.dinomite.dg.emon.EmonClient
-import net.dinomite.dg.hubitat.HubitatClient
-import net.dinomite.dg.services.EmonScheduleService
-import net.dinomite.dg.services.HubitatEmonUpdateProducer
 import org.apache.commons.configuration2.CompositeConfiguration
 import org.apache.commons.configuration2.PropertiesConfiguration
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder
@@ -35,20 +31,6 @@ private val STOP_DURATION: Duration = Duration.ofSeconds(5)
 val objectMapper = ObjectMapper().apply {
     registerModule(KotlinModule())
     configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-}
-
-/**
- * The services to run
- */
-fun buildServices(config: DataGathererConfig): List<Service> = listOf<Service>(
-        hubitatToEmonReportingService(config)
-)
-
-private fun hubitatToEmonReportingService(config: DataGathererConfig): EmonScheduleService {
-    val emonClient = EmonClient(config)
-    val hubitatClient = HubitatClient(config)
-    val hubitatProducer = HubitatEmonUpdateProducer(config.EMON_NODE, config.HUBITAT_DEVICES, hubitatClient)
-    return EmonScheduleService(config, hubitatProducer, emonClient)
 }
 
 fun main(args: Array<String>) {

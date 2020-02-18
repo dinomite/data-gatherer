@@ -7,7 +7,14 @@ import net.dinomite.dg.DataGathererConfig
 import net.dinomite.dg.objectMapper
 import org.slf4j.LoggerFactory
 
-class EmonClient(config: DataGathererConfig) {
+interface EmonClient {
+    suspend fun sendUpdate(update: EmonUpdate)
+}
+
+/**
+ * HTTP client that sends information to EmonCMS
+ */
+class HttpEmonClient(config: DataGathererConfig) : EmonClient {
     companion object {
         private val logger = LoggerFactory.getLogger(this::class.java.name)
     }
@@ -15,7 +22,7 @@ class EmonClient(config: DataGathererConfig) {
     private val baseUrl = with(config) { "$EMON_SCHEME://$EMON_HOST/$EMON_INPUT_BASE_PATH" }
     private val apiKey = config.EMON_API_KEY
 
-    suspend fun sendUpdate(update: EmonUpdate) {
+    override suspend fun sendUpdate(update: EmonUpdate) {
         val (request, _, result) = Fuel.get(baseUrl, update.parameters())
                 .awaitObjectResponseResult(EmonUpdateResponseDeserializer)
         result.fold(
