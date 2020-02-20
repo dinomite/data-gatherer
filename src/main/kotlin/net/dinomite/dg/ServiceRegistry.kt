@@ -25,8 +25,8 @@ fun buildServices(config: DataGathererConfig): List<Service> {
  */
 private fun hubitatToEmonReportingService(emonClient: EmonClient, config: DataGathererConfig): EmonScheduleService {
     val hubitatClient = HubitatClient(config)
-    val hubitatProducer = HubitatPowerEmonUpdateProducer(config.EMON_NODE, config.HUBITAT_DEVICES, hubitatClient)
-    return EmonScheduleService(config.SCHEDULED_SERVICE_INTERVAL, hubitatProducer, emonClient)
+    val hubitatProducer = HubitatPowerEmonUpdateProducer(config.HUBITAT_EMON_NODE, config.HUBITAT_DEVICES, hubitatClient)
+    return EmonScheduleService(Duration.ofMinutes(1), hubitatProducer, emonClient)
 }
 
 /**
@@ -34,8 +34,6 @@ private fun hubitatToEmonReportingService(emonClient: EmonClient, config: DataGa
  */
 private fun awairToEmonReportingService(emonClient: EmonClient, config: DataGathererConfig): EmonScheduleService {
     val awairClient = AwairClient(config)
-    // TODO set node in config
-    val awairProducer = AwairEmonUpdateProducer("environment", config.AWAIR_DEVICE_IDS, awairClient)
-    // TODO set interval in config
+    val awairProducer = AwairEmonUpdateProducer(config.AWAIR_EMON_NODE, config.AWAIR_DEVICE_IDS, awairClient)
     return EmonScheduleService(Duration.ofMinutes(5), awairProducer, emonClient)
 }
