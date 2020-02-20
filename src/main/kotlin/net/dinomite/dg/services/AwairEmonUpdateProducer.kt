@@ -6,6 +6,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import net.dinomite.dg.awair.AwairClient
 import net.dinomite.dg.awair.Device
+import net.dinomite.dg.awair.Sensor
 import net.dinomite.dg.emon.EmonUpdate
 import org.slf4j.LoggerFactory
 
@@ -24,22 +25,26 @@ class AwairEmonUpdateProducer(private val node: String,
      */
     override suspend fun buildUpdate(): EmonUpdate {
         val updates = retrieveDevices()
-                .mapNotNull { (deviceId, device) ->
+                .map { (deviceId, device) ->
                     if (device == null) {
                         logger.warn("Dropping update for $deviceId because it is null")
                         null
                     } else {
-                        // TODO send all values
-                        val temperature = device.temperature()
-                        if (temperature == null) {
-                            logger.warn("Temperature value for <$deviceId> is null")
-                            null
-                        } else {
-                            logger.debug("Temperature for $deviceId: $temperature")
-                            "awair_${deviceId}_temperature" to temperature.toString()
+                        Sensor.Comp.values().map { comp ->
+                            val value = device.sensorValue(comp)
+                            if (value == null) {
+                                logger.warn("${comp.name} value for <$deviceId> is null")
+                                null
+                            } else {
+                                logger.debug("${comp.name} for $deviceId: $value")
+                                "awair_${deviceId}_${comp.name.toLowerCase()}" to value.toString()
+                            }
                         }
                     }
                 }
+                .filterNotNull()
+                .flatten()
+                .filterNotNull()
                 .toMap()
 
         return EmonUpdate(node, updates)
