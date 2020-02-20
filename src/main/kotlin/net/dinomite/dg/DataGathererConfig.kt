@@ -17,4 +17,10 @@ class DataGathererConfig(config: CompositeConfiguration) {
     val HUBITAT_DEVICE_BASE_PATH = config.getString("HUBITAT_DEVICE_BASE_PATH")
     val HUBITAT_DEVICES = config.getList(String::class.java, "HUBITAT_DEVICES")
     val HUBITAT_ACCESS_TOKEN = config.getString("HUBITAT_ACCESS_TOKEN")
+
+    val AWAIR_SCHEME = config.getString("AWAIR_SCHEME")
+    val AWAIR_HOST = config.getString("AWAIR_HOST")
+    val AWAIR_DEVICE_BASE_PATH = config.getString("AWAIR_DEVICE_BASE_PATH")
+    val AWAIR_DEVICE_IDS = config.getList(String::class.java, "AWAIR_DEVICE_IDS")
+    val AWAIR_ACCESS_TOKEN = config.getString("AWAIR_ACCESS_TOKEN")
 }

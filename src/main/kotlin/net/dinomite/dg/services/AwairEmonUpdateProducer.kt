@@ -1,0 +1,53 @@
+package net.dinomite.dg.services
+
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
+import net.dinomite.dg.awair.AwairClient
+import net.dinomite.dg.awair.Device
+import net.dinomite.dg.emon.EmonUpdate
+import org.slf4j.LoggerFactory
+
+/**
+ * Pulls environment information from Awair and packages into an EmonUpdate
+ */
+class AwairEmonUpdateProducer(private val node: String,
+                              private val devices: List<String>,
+                              private val awairClient: AwairClient) : EmonUpdateProducer {
+    companion object {
+        private val logger = LoggerFactory.getLogger(this::class.java.name)
+    }
+
+    /**
+     * Retrieve environment information from each Awair device
+     */
+    override suspend fun buildUpdate(): EmonUpdate {
+        val updates = retrieveDevices()
+                .mapNotNull { (deviceId, device) ->
+                    if (device == null) {
+                        logger.warn("Dropping update for $deviceId because it is null")
+                        null
+                    } else {
+                        // TODO send all values
+                        val temperature = device.temperature()
+                        if (temperature == null) {
+                            logger.warn("Temperature value for <$deviceId> is null")
+                            null
+                        } else {
+                            logger.debug("Temperature for $deviceId: $temperature")
+                            "awair_${deviceId}_temperature" to temperature.toString()
+                        }
+                    }
+                }
+                .toMap()
+
+        return EmonUpdate(node, updates)
+    }
+
+    private suspend fun retrieveDevices(): Map<String, Device?> = withContext(Dispatchers.IO) {
+        devices.map { deviceId -> async { deviceId to awairClient.retrieveDevice(deviceId) } }
+                .awaitAll()
+                .toMap()
+    }
+}

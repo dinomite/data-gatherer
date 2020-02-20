@@ -4,6 +4,7 @@ package net.dinomite.dg
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.util.concurrent.Service
 import com.google.common.util.concurrent.ServiceManager
@@ -29,6 +30,7 @@ USAGE:
 private val STOP_DURATION: Duration = Duration.ofSeconds(5)
 
 val objectMapper = ObjectMapper().apply {
+    registerModule(JavaTimeModule())
     registerModule(KotlinModule())
     configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 }
