@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import java.time.Instant
 
 data class Device(val data: List<AwairData>) {
-    fun sensorValue(comp: Sensor.Comp): Double? = data.first().sensors.firstOrNull { it.comp == comp }?.value
+    fun sensorValue(comp: Sensor.Comp): Double? = data.firstOrNull()?.sensors?.firstOrNull { it.comp == comp }?.value
 }
 
 data class AwairData(val timestamp: Instant, val score: Int, val sensors: List<Sensor>)
