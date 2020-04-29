@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.google.common.util.concurrent.Service
 import com.google.common.util.concurrent.ServiceManager
 import kotlinx.coroutines.runBlocking
 import org.apache.commons.configuration2.CompositeConfiguration
@@ -39,12 +38,6 @@ fun main(args: Array<String>) {
     val config = buildConfiguration(args)
 
     val serviceManager = ServiceManager(buildServices(config))
-    serviceManager.addListener(object : ServiceManager.Listener() {
-        override fun failure(service: Service) {
-            logger.warn("Failed to stop ${service.javaClass.simpleName}")
-            super.failure(service)
-        }
-    })
     Runtime.getRuntime().addShutdownHook(shutdownHook(serviceManager))
 
     serviceManager.startAsync()
