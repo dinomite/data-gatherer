@@ -73,7 +73,7 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
                     bind(EmonClient::class.java).toInstance(HttpEmonClient(objectMapper, config))
 
                     bind(DataGathererConfig::class.java).toInstance(config)
-                    bind(HubitatToEmonPowerReportingService::class.java)
+                    bind(HubitatToEmonReportingService::class.java)
                     bind(AwairToEmonReportingService::class.java)
 
                     binder().requireAtInjectOnConstructors()

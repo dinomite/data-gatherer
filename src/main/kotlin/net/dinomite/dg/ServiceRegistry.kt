@@ -12,9 +12,9 @@ import net.dinomite.dg.services.HubitatEmonUpdateProducer
 import java.time.Duration
 
 /**
- * Pull power updates from Hubitat and ship them off to EmonCMS.
+ * Pull updates from Hubitat and ship them off to EmonCMS.
  */
-class HubitatToEmonPowerReportingService
+class HubitatToEmonReportingService
 @Inject constructor(emonClient: EmonClient,
                     objectMapper: ObjectMapper,
                     config: DataGathererConfig) :
