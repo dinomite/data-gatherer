@@ -1,10 +1,11 @@
 package net.dinomite.dg.emon
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.coroutines.awaitObjectResponseResult
+import com.google.inject.Inject
 import net.dinomite.dg.DataGathererConfig
-import net.dinomite.dg.objectMapper
 import org.slf4j.LoggerFactory
 
 interface EmonClient {
@@ -14,17 +15,20 @@ interface EmonClient {
 /**
  * HTTP client that sends information to EmonCMS
  */
-class HttpEmonClient(config: DataGathererConfig) : EmonClient {
+class HttpEmonClient
+@Inject constructor(private val objectMapper: ObjectMapper,
+                    config: DataGathererConfig) : EmonClient {
     companion object {
         private val logger = LoggerFactory.getLogger(this::class.java.name)
     }
 
+    private val emonUpdateResponseDeserializer = EmonUpdateResponseDeserializer(objectMapper)
     private val baseUrl = with(config) { "$EMON_SCHEME://$EMON_HOST/$EMON_INPUT_BASE_PATH" }
     private val apiKey = config.EMON_API_KEY
 
     override suspend fun sendUpdate(update: EmonUpdate) {
         val (request, _, result) = Fuel.get(baseUrl, update.parameters())
-                .awaitObjectResponseResult(EmonUpdateResponseDeserializer)
+                .awaitObjectResponseResult(emonUpdateResponseDeserializer)
         result.fold(
                 { emonUpdateResponse ->
                     if (!emonUpdateResponse.success) {
@@ -42,7 +46,7 @@ class HttpEmonClient(config: DataGathererConfig) : EmonClient {
     ).toList()
 }
 
-object EmonUpdateResponseDeserializer : ResponseDeserializable<EmonUpdateResponse> {
+class EmonUpdateResponseDeserializer(private val objectMapper: ObjectMapper) : ResponseDeserializable<EmonUpdateResponse> {
     override fun deserialize(content: String): EmonUpdateResponse =
             objectMapper.readValue(content, EmonUpdateResponse::class.java)
 }

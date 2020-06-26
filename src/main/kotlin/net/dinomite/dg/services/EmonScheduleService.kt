@@ -13,7 +13,7 @@ import kotlin.system.measureTimeMillis
  * pulls an update from the producer and sends it with the emonClient.
  */
 @Suppress("UnstableApiUsage")
-class EmonScheduleService(private val period: Duration,
+open class EmonScheduleService(private val period: Duration,
                           private val producer: EmonUpdateProducer,
                           private val emonClient: EmonClient) : AbstractScheduledService() {
     companion object {
