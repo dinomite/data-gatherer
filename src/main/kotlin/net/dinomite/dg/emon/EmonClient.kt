@@ -23,8 +23,8 @@ class HttpEmonClient
     }
 
     private val emonUpdateResponseDeserializer = EmonUpdateResponseDeserializer(objectMapper)
-    private val baseUrl = with(config) { "$EMON_SCHEME://$EMON_HOST/$EMON_INPUT_BASE_PATH" }
-    private val apiKey = config.EMON_API_KEY
+    private val baseUrl = with(config) { "$emonScheme://$emonHost/$emonInputBasePath" }
+    private val apiKey = config.emonApiKey
 
     override suspend fun sendUpdate(update: EmonUpdate) {
         // TODO async calls to send data

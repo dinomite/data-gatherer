@@ -20,7 +20,7 @@ class HubitatToEmonPowerReportingService
                     config: DataGathererConfig) :
         EmonScheduleService(Duration.ofMinutes(1),
                 HubitatEmonUpdateProducer(
-                        objectMapper.readValue(config.HUBITAT_DEVICES),
+                        objectMapper.readValue(config.hubitatDevices),
                         HubitatClient(objectMapper, config)
                 ),
                 emonClient)
@@ -34,8 +34,8 @@ class AwairToEmonReportingService
                     config: DataGathererConfig) :
         EmonScheduleService(Duration.ofMinutes(5),
                 AwairEmonUpdateProducer(
-                        config.AWAIR_EMON_NODE,
-                        config.AWAIR_DEVICE_IDS,
+                        config.awairEmonNode,
+                        config.awairDeviceIds,
                         AwairClient(objectMapper, config)
                 ),
                 emonClient)

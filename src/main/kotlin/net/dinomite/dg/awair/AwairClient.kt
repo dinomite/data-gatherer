@@ -21,8 +21,8 @@ class AwairClient
     }
 
     private val deviceDeserializer = DeviceDeserializer(objectMapper)
-    private val baseUrl = with(config) { "$AWAIR_SCHEME://$AWAIR_HOST/$AWAIR_DEVICE_BASE_PATH" }
-    private val accessToken = config.AWAIR_ACCESS_TOKEN
+    private val baseUrl = with(config) { "$awairScheme://$awairHost/$awairDeviceBasePath" }
+    private val accessToken = config.awairAccessToken
 
     suspend fun retrieveDevice(deviceId: String): Device? {
         val (request, _, result) = Fuel.get(deviceUrl(deviceId))

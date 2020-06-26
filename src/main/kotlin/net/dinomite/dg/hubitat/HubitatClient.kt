@@ -13,8 +13,8 @@ class HubitatClient(objectMapper: ObjectMapper, config: DataGathererConfig) {
     }
 
     private val deviceDeserializer = DeviceDeserializer(objectMapper)
-    private val baseUrl = with(config) { "$HUBITAT_SCHEME://$HUBITAT_HOST/$HUBITAT_DEVICE_BASE_PATH" }
-    private val accessToken = config.HUBITAT_ACCESS_TOKEN
+    private val baseUrl = with(config) { "$hubitatScheme://$hubitatHost/$hubitatDeviceBasePath" }
+    private val accessToken = config.hubitatAccessToken
 
     suspend fun retrieveDevice(deviceId: String): Device? {
         val (request, _, result) = Fuel.get(deviceUrl(deviceId))
