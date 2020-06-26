@@ -1,12 +1,13 @@
-package net.dinomite.dg.services
+package net.dinomite.dg.hubitat
 
-import net.dinomite.dg.hubitat.Device
-import net.dinomite.dg.objectMapper
+import net.dinomite.dg.configuredObjectMapper
 import org.junit.jupiter.api.Test
 
 internal class DeviceTest {
+    private val objectMapper = configuredObjectMapper()
+
     @Test
-    fun deserialize() {
+    fun deserializePowerDevice() {
         val json = """ {
                 "attributes": [
                     {
@@ -141,6 +142,99 @@ internal class DeviceTest {
                 "id": "13",
                 "label": "Porch switch",
                 "name": "Porch switch"
+            }
+            """
+
+        val result = objectMapper.readValue(json, Device::class.java)
+        println(result)
+    }
+
+    @Test
+    fun deserializeEnvironmentDevice() {
+        val json = """
+            {
+              "id": "193",
+              "name": "Main hall temperature & humidity",
+              "label": "Zigbee device LUMI:lumi.weather",
+              "attributes": [
+                {
+                  "name": "battery",
+                  "currentValue": 78,
+                  "dataType": "NUMBER"
+                },
+                {
+                  "name": "batteryLastReplaced",
+                  "currentValue": "Jun 04 2020",
+                  "dataType": "STRING"
+                },
+                {
+                  "name": "humidity",
+                  "currentValue": 52.5,
+                  "dataType": "NUMBER"
+                },
+                {
+                  "name": "lastCheckinEpoch",
+                  "currentValue": null,
+                  "dataType": "STRING"
+                },
+                {
+                  "name": "lastCheckinTime",
+                  "currentValue": null,
+                  "dataType": "DATE"
+                },
+                {
+                  "name": "pressure",
+                  "currentValue": 1004,
+                  "dataType": "NUMBER"
+                },
+                {
+                  "name": "temperature",
+                  "currentValue": 75.94,
+                  "dataType": "NUMBER"
+                }
+              ],
+              "capabilities": [
+                "TemperatureMeasurement",
+                {
+                  "attributes": [
+                    {
+                      "name": "temperature",
+                      "dataType": null
+                    }
+                  ]
+                },
+                "RelativeHumidityMeasurement",
+                {
+                  "attributes": [
+                    {
+                      "name": "humidity",
+                      "dataType": null
+                    }
+                  ]
+                },
+                "Battery",
+                {
+                  "attributes": [
+                    {
+                      "name": "battery",
+                      "dataType": null
+                    }
+                  ]
+                },
+                "Sensor",
+                "PressureMeasurement",
+                {
+                  "attributes": [
+                    {
+                      "name": "pressure",
+                      "dataType": null
+                    }
+                  ]
+                }
+              ],
+              "commands": [
+                "resetBatteryReplacedDate"
+              ]
             }
             """
 

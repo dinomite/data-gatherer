@@ -1,3 +1,12 @@
 package net.dinomite.dg.emon
 
-data class EmonUpdate(val node: String, val updates: Map<String, String>)
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonCreator.Mode.DELEGATING
+import com.fasterxml.jackson.annotation.JsonValue
+import net.dinomite.dg.hubitat.DeviceType
+
+data class EmonUpdate(val updates: Map<EmonNode, Map<String, String>>)
+
+data class EmonNode @JsonCreator(mode = DELEGATING) constructor(@JsonValue val value: String) {
+    constructor(type: DeviceType) : this(type.node)
+}

@@ -2,10 +2,10 @@ package net.dinomite.dg.services
 
 import kotlinx.coroutines.runBlocking
 import net.dinomite.dg.emon.EmonClient
+import net.dinomite.dg.emon.EmonNode
 import net.dinomite.dg.emon.EmonUpdate
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.Duration
-import java.time.Instant
 import java.util.concurrent.ArrayBlockingQueue
 import kotlin.test.assertEquals
 
@@ -18,7 +18,7 @@ internal class EmonScheduleServiceTest {
             val producer = object : EmonUpdateProducer {
                 lateinit var lastUpdate: EmonUpdate
                 override suspend fun buildUpdate(): EmonUpdate {
-                    lastUpdate = EmonUpdate(Instant.now().toString(), mapOf())
+                    lastUpdate = EmonUpdate(mapOf(EmonNode("foo") to mapOf("temperature" to "77")))
                     return lastUpdate
                 }
             }

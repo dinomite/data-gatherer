@@ -12,18 +12,24 @@ data class Device(val id: Int, val name: String, val attributes: List<Attribute>
     data class Attribute(val name: String,
                          val currentValue: String?,
                          val dataType: DataType) {
-        enum class DataType(val value: String) {
-            NUMBER("NUMBER"),
-            STRING("STRING"),
-            ENUM("ENUM")
+        enum class DataType {
+            NUMBER,
+            STRING,
+            ENUM,
+            DATE
         }
 
-        fun intValue(): Int? {
+        fun doubleValue(): Double? {
             if (dataType != NUMBER) {
                 throw IllegalAccessError("DataType is $dataType, not $NUMBER")
             }
 
-            return currentValue?.toInt()
+            return currentValue?.toDouble()
         }
     }
+}
+
+enum class DeviceType(val node: String) {
+    POWER("power"),
+    ENVIRONMENT("environment")
 }

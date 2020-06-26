@@ -27,23 +27,25 @@ class HttpEmonClient
     private val apiKey = config.EMON_API_KEY
 
     override suspend fun sendUpdate(update: EmonUpdate) {
-        val (request, _, result) = Fuel.get(baseUrl, update.parameters())
-                .awaitObjectResponseResult(emonUpdateResponseDeserializer)
-        result.fold(
-                { emonUpdateResponse ->
-                    if (!emonUpdateResponse.success) {
-                        logger.warn("Failed to send update: ${emonUpdateResponse.message}")
-                    }
-                },
-                { error -> logger.warn("Request to ${request.url} got error ${error.exception}: ${error.message}") }
-        )
+        // TODO async calls to send data
+        update.updates.forEach { (node, map) ->
+            val body = mapOf(
+                    "apikey" to apiKey,
+                    "node" to node.value,
+                    "fulljson" to objectMapper.writeValueAsString(map)
+            ).toList()
+            val (request, _, result) = Fuel.get(baseUrl, body)
+                    .awaitObjectResponseResult(emonUpdateResponseDeserializer)
+            result.fold(
+                    { emonUpdateResponse ->
+                        if (!emonUpdateResponse.success) {
+                            logger.warn("Failed to send update: ${emonUpdateResponse.message}")
+                        }
+                    },
+                    { error -> logger.warn("Request to ${request.url} got error ${error.exception}: ${error.message}") }
+            )
+        }
     }
-
-    private fun EmonUpdate.parameters(): List<Pair<String, String>> = mapOf(
-            "apikey" to apiKey,
-            "node" to node,
-            "fulljson" to objectMapper.writeValueAsString(updates)
-    ).toList()
 }
 
 class EmonUpdateResponseDeserializer(private val objectMapper: ObjectMapper) : ResponseDeserializable<EmonUpdateResponse> {

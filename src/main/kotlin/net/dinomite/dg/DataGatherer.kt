@@ -73,7 +73,7 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
                     bind(EmonClient::class.java).toInstance(HttpEmonClient(objectMapper, config))
 
                     bind(DataGathererConfig::class.java).toInstance(config)
-                    bind(HubitatToEmonReportingService::class.java)
+                    bind(HubitatToEmonPowerReportingService::class.java)
                     bind(AwairToEmonReportingService::class.java)
 
                     binder().requireAtInjectOnConstructors()
@@ -87,7 +87,7 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
 
 private fun <T> onDedicatedThread(builder: () -> T): Future<T> = FutureTask { builder() }.also { Thread(it).start() }
 
-private fun configuredObjectMapper() = ObjectMapper().apply {
+internal fun configuredObjectMapper() = ObjectMapper().apply {
     registerModule(JavaTimeModule())
     registerModule(KotlinModule())
     configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

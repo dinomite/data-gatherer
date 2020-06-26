@@ -7,13 +7,14 @@ import kotlinx.coroutines.withContext
 import net.dinomite.dg.awair.AwairClient
 import net.dinomite.dg.awair.Device
 import net.dinomite.dg.awair.Sensor
+import net.dinomite.dg.emon.EmonNode
 import net.dinomite.dg.emon.EmonUpdate
 import org.slf4j.LoggerFactory
 
 /**
  * Pulls environment information from Awair and packages into an EmonUpdate
  */
-class AwairEmonUpdateProducer(private val node: String,
+class AwairEmonUpdateProducer(private val node: EmonNode,
                               private val devices: List<String>,
                               private val awairClient: AwairClient) : EmonUpdateProducer {
     companion object {
@@ -46,8 +47,7 @@ class AwairEmonUpdateProducer(private val node: String,
                 .flatten()
                 .filterNotNull()
                 .toMap()
-
-        return EmonUpdate(node, updates)
+        return EmonUpdate(mapOf(node to updates))
     }
 
     private suspend fun retrieveDevices(): Map<String, Device?> = withContext(Dispatchers.IO) {
