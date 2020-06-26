@@ -5,7 +5,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import net.dinomite.dg.emon.EmonNode
-import net.dinomite.dg.emon.EmonUpdate
 import net.dinomite.dg.hubitat.Device
 import net.dinomite.dg.hubitat.DeviceType
 import net.dinomite.dg.hubitat.DeviceType.ENVIRONMENT
@@ -21,8 +20,9 @@ class HubitatEmonUpdateProducer(private val devices: Map<String, DeviceType>,
     /**
      * Retrieve information for each device ID from Hubitat
      */
-    override suspend fun buildUpdate(): EmonUpdate {
-        val updates = retrieveDevices()
+    override suspend fun buildUpdate(): Map<EmonNode, Map<String, String>> {
+        val updates = mutableMapOf<EmonNode, Map<String, String>>()
+        retrieveDevices()
                 .mapNotNull { (deviceId, type, device) ->
                     when {
                         device == null -> {
@@ -38,9 +38,17 @@ class HubitatEmonUpdateProducer(private val devices: Map<String, DeviceType>,
                         }
                     }
                 }
-                .map { (node, map) -> node to map}
-                .toMap()
-        return EmonUpdate(updates)
+                .groupBy { (node, _) -> node }
+                .map { (node, pairList) ->
+                    node to pairList.map { it.second }
+                }
+                .forEach { (node, listOfMaps) ->
+                    val map = mutableMapOf<String, String>()
+                    listOfMaps.forEach { map.putAll(it) }
+                    updates[node] = map
+                }
+
+        return updates
     }
 
     private fun powerDevice(device: Device): Pair<EmonNode, Map<String, String>>? {

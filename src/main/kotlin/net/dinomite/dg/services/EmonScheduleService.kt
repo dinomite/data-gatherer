@@ -3,6 +3,7 @@ package net.dinomite.dg.services
 import com.google.common.util.concurrent.AbstractScheduledService
 import kotlinx.coroutines.runBlocking
 import net.dinomite.dg.emon.EmonClient
+import net.dinomite.dg.emon.EmonUpdate
 import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.time.Duration.ZERO
@@ -24,7 +25,10 @@ open class EmonScheduleService(private val period: Duration,
 
     override fun runOneIteration() = runBlocking {
         val time = measureTimeMillis {
-            emonClient.sendUpdate(producer.buildUpdate())
+            val update = producer.buildUpdate()
+            update.forEach { (node, map) ->
+                emonClient.sendUpdate(EmonUpdate(node, map))
+            }
         }
         logger.debug("Iteration took $time ms")
     }

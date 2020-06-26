@@ -30,6 +30,6 @@ data class Device(val id: Int, val name: String, val attributes: List<Attribute>
 }
 
 enum class DeviceType(val node: String) {
-    POWER("power"),
+    POWER("energy"),
     ENVIRONMENT("environment")
 }

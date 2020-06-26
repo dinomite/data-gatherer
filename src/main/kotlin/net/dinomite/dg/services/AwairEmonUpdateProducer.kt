@@ -8,7 +8,6 @@ import net.dinomite.dg.awair.AwairClient
 import net.dinomite.dg.awair.Device
 import net.dinomite.dg.awair.Sensor
 import net.dinomite.dg.emon.EmonNode
-import net.dinomite.dg.emon.EmonUpdate
 import org.slf4j.LoggerFactory
 
 /**
@@ -24,7 +23,7 @@ class AwairEmonUpdateProducer(private val node: EmonNode,
     /**
      * Retrieve environment information from each Awair device
      */
-    override suspend fun buildUpdate(): EmonUpdate {
+    override suspend fun buildUpdate(): Map<EmonNode, Map<String, String>> {
         val updates = retrieveDevices()
                 .map { (deviceId, device) ->
                     if (device == null) {
@@ -47,7 +46,7 @@ class AwairEmonUpdateProducer(private val node: EmonNode,
                 .flatten()
                 .filterNotNull()
                 .toMap()
-        return EmonUpdate(mapOf(node to updates))
+        return mapOf(node to updates)
     }
 
     private suspend fun retrieveDevices(): Map<String, Device?> = withContext(Dispatchers.IO) {

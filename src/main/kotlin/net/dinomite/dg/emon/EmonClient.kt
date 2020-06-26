@@ -27,24 +27,21 @@ class HttpEmonClient
     private val apiKey = config.emonApiKey
 
     override suspend fun sendUpdate(update: EmonUpdate) {
-        // TODO async calls to send data
-        update.updates.forEach { (node, map) ->
-            val body = mapOf(
-                    "apikey" to apiKey,
-                    "node" to node.value,
-                    "fulljson" to objectMapper.writeValueAsString(map)
-            ).toList()
-            val (request, _, result) = Fuel.get(baseUrl, body)
-                    .awaitObjectResponseResult(emonUpdateResponseDeserializer)
-            result.fold(
-                    { emonUpdateResponse ->
-                        if (!emonUpdateResponse.success) {
-                            logger.warn("Failed to send update: ${emonUpdateResponse.message}")
-                        }
-                    },
-                    { error -> logger.warn("Request to ${request.url} got error ${error.exception}: ${error.message}") }
-            )
-        }
+        val body = mapOf(
+                "apikey" to apiKey,
+                "node" to update.node.value,
+                "fulljson" to objectMapper.writeValueAsString(update.updates)
+        ).toList()
+        val (request, _, result) = Fuel.get(baseUrl, body)
+                .awaitObjectResponseResult(emonUpdateResponseDeserializer)
+        result.fold(
+                { emonUpdateResponse ->
+                    if (!emonUpdateResponse.success) {
+                        logger.warn("Failed to send update: ${emonUpdateResponse.message}")
+                    }
+                },
+                { error -> logger.warn("Request to ${request.url} got error ${error.exception}: ${error.message}") }
+        )
     }
 }
 
