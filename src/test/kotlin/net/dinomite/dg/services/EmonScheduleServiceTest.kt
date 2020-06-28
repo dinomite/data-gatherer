@@ -29,7 +29,7 @@ internal class EmonScheduleServiceTest {
                     queue.offer(update)
                 }
             }
-            val ess = EmonScheduleService(Duration.ofMillis(15), producer, client)
+            val ess = object : EmonScheduleService(Duration.ofMillis(15), producer, client) {}
 
             ess.startAsync()
 
