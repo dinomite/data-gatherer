@@ -28,6 +28,6 @@ abstract class EmonScheduleService(private val period: Duration,
                 emonClient.sendUpdate(EmonUpdate(node, map))
             }
         }
-        logger.debug("Iteration took $time ms")
+        logger.info("Iteration took $time ms")
     }
 }
