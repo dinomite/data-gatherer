@@ -14,12 +14,10 @@ import kotlin.system.measureTimeMillis
  * pulls an update from the producer and sends it with the emonClient.
  */
 @Suppress("UnstableApiUsage")
-open class EmonScheduleService(private val period: Duration,
-                          private val producer: EmonUpdateProducer,
-                          private val emonClient: EmonClient) : AbstractScheduledService() {
-    companion object {
-        private val logger = LoggerFactory.getLogger(this::class.java.name)
-    }
+abstract class EmonScheduleService(private val period: Duration,
+                               private val producer: EmonUpdateProducer,
+                               private val emonClient: EmonClient) : AbstractScheduledService() {
+    private val logger = LoggerFactory.getLogger(this::class.java.name)
 
     override fun scheduler(): Scheduler = Scheduler.newFixedRateSchedule(ZERO, period)
 
