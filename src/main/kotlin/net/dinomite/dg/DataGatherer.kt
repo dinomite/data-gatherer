@@ -53,7 +53,8 @@ fun main(args: Array<String>) {
 
     val serviceManager = ServiceManager(listOf(
             injector.getInstance(HubitatToEmonReportingService::class.java),
-            injector.getInstance(AwairToEmonReportingService::class.java)
+            injector.getInstance(AwairToEmonReportingService::class.java),
+            injector.getInstance(PiZeroToEmonReportingService::class.java)
     ))
     Runtime.getRuntime().addShutdownHook(shutdownHook(serviceManager))
 
@@ -73,8 +74,10 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
                     bind(EmonClient::class.java).toInstance(HttpEmonClient(objectMapper, config))
 
                     bind(DataGathererConfig::class.java).toInstance(config)
+
                     bind(HubitatToEmonReportingService::class.java)
                     bind(AwairToEmonReportingService::class.java)
+                    bind(PiZeroToEmonReportingService::class.java)
 
                     binder().requireAtInjectOnConstructors()
                     binder().requireExactBindingAnnotations()

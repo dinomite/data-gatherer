@@ -4,16 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.inject.Inject
 import net.dinomite.dg.awair.AwairClient
+import net.dinomite.dg.data_producer.DataProducerClient
 import net.dinomite.dg.emon.EmonClient
 import net.dinomite.dg.hubitat.HubitatClient
 import net.dinomite.dg.services.AwairEmonUpdateProducer
+import net.dinomite.dg.services.DataProducerEmonUpdateProducer
 import net.dinomite.dg.services.EmonScheduleService
 import net.dinomite.dg.services.HubitatEmonUpdateProducer
 import java.time.Duration
 
-/**
- * Pull updates from Hubitat and ship them off to EmonCMS.
- */
 class HubitatToEmonReportingService
 @Inject constructor(emonClient: EmonClient,
                     objectMapper: ObjectMapper,
@@ -25,9 +24,6 @@ class HubitatToEmonReportingService
                 ),
                 emonClient)
 
-/**
- * Pull environment data Awair and ship if off to EmonCMS.
- */
 class AwairToEmonReportingService
 @Inject constructor(emonClient: EmonClient,
                     objectMapper: ObjectMapper,
@@ -38,4 +34,12 @@ class AwairToEmonReportingService
                         config.awairDeviceIds,
                         AwairClient(objectMapper, config)
                 ),
+                emonClient)
+
+class PiZeroToEmonReportingService
+@Inject constructor(emonClient: EmonClient,
+                    objectMapper: ObjectMapper,
+                    config: DataGathererConfig) :
+        EmonScheduleService(Duration.ofMinutes(1),
+                DataProducerEmonUpdateProducer(DataProducerClient(objectMapper, config.rPiZeroUrl)),
                 emonClient)
