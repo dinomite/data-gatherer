@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME
 import com.fasterxml.jackson.annotation.JsonValue
 
-data class NodeData @JsonCreator(mode = JsonCreator.Mode.DELEGATING) constructor(@JsonValue val value: Map<String, Sensor>)
+data class NodeData @JsonCreator(mode = JsonCreator.Mode.DELEGATING) constructor(@JsonValue val sensors: List<Sensor>)
 
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
 @JsonSubTypes(
@@ -16,12 +16,18 @@ data class NodeData @JsonCreator(mode = JsonCreator.Mode.DELEGATING) constructor
 )
 interface Sensor {
     fun stringValue(): String
+    fun name(): String
 }
 
-class IntSensor<Int>(private val value: Int): Sensor {
-    override fun stringValue(): String = value.toString()
+data class IntSensor(val name: String, private val value: Int): Sensor {
+    override fun name(): String = name
+
+    override fun stringValue(): String = "$value"
+
 }
 
-class DoubleSensor<Double>(private val value: Double): Sensor {
-    override fun stringValue(): String = value.toString()
+data class DoubleSensor(val name: String, private val value: Double): Sensor {
+    override fun name(): String = name
+
+    override fun stringValue(): String = "$value"
 }

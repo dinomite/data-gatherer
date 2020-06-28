@@ -22,6 +22,7 @@ abstract class EmonScheduleService(private val period: Duration,
     override fun scheduler(): Scheduler = Scheduler.newFixedRateSchedule(ZERO, period)
 
     override fun runOneIteration() = runBlocking {
+        logger.info("Starting update…")
         val time = measureTimeMillis {
             val update = producer.buildUpdate()
             update.forEach { (node, map) ->

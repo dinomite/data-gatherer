@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.coroutines.awaitObjectResponseResult
+import com.google.common.annotations.VisibleForTesting
 import net.dinomite.dg.emon.EmonNode
 import org.slf4j.LoggerFactory
 
@@ -30,7 +31,8 @@ class DataProducerClient(objectMapper: ObjectMapper, private val url: String) {
 
 class SensorsDeserializer(private val objectMapper: ObjectMapper) : ResponseDeserializable<Map<EmonNode, NodeData>> {
     companion object {
-        private val typeRef = object : TypeReference<Map<EmonNode, NodeData>>() {}
+        @VisibleForTesting
+        internal val typeRef = object : TypeReference<Map<EmonNode, NodeData>>() {}
     }
 
     override fun deserialize(content: String): Map<EmonNode, NodeData> = objectMapper.readValue(content, typeRef)
