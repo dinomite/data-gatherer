@@ -1,7 +1,7 @@
 # alpine:3.11.2
 FROM alpine@sha256:3983cc12fb9dc20a009340149e382a18de6a8261b0ac0e8f5fcdf11f8dd5937e AS jvm
 
-ARG JDK_VERSION=zulu11.35.15-ca-jdk11.0.5
+ARG JDK_VERSION=zulu11.41.23-ca-jdk11.0.8
 
 RUN apk add ca-certificates && rm -rf /var/cache/apk/*
 
