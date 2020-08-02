@@ -18,9 +18,9 @@ internal class EmonScheduleServiceTest {
         runBlocking {
             val producer = object : EmonUpdateProducer {
                 lateinit var lastUpdate: Map<EmonNode, Map<String, String>>
-                override suspend fun buildUpdate(): Map<EmonNode, Map<String, String>> {
+                override suspend fun buildUpdates(): List<Map<EmonNode, Map<String, String>>> {
                     lastUpdate = mapOf(EmonNode("node") to mapOf(Instant.now().toString() to "77"))
-                    return lastUpdate
+                    return listOf(lastUpdate)
                 }
             }
             val client = object : EmonClient {

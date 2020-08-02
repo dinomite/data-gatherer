@@ -6,5 +6,5 @@ interface EmonUpdateProducer {
     /**
      * Produce a list of EmonUpdates to send to EmonCMS
      */
-    suspend fun buildUpdate(): Map<EmonNode, Map<String, String>>
+    suspend fun buildUpdates(): List<Map<EmonNode, Map<String, String>>>
 }

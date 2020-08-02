@@ -15,8 +15,8 @@ import kotlin.system.measureTimeMillis
  */
 @Suppress("UnstableApiUsage")
 abstract class EmonScheduleService(private val period: Duration,
-                               private val producer: EmonUpdateProducer,
-                               private val emonClient: EmonClient) : AbstractScheduledService() {
+                                   private val producer: EmonUpdateProducer,
+                                   private val emonClient: EmonClient) : AbstractScheduledService() {
     private val logger = LoggerFactory.getLogger(this::class.java.name)
 
     override fun scheduler(): Scheduler = Scheduler.newFixedRateSchedule(ZERO, period)
@@ -24,9 +24,10 @@ abstract class EmonScheduleService(private val period: Duration,
     override fun runOneIteration() = runBlocking {
         logger.info("Starting update…")
         val time = measureTimeMillis {
-            val update = producer.buildUpdate()
-            update.forEach { (node, map) ->
-                emonClient.sendUpdate(EmonUpdate(node, map))
+            producer.buildUpdates().forEach { update ->
+                update.forEach { (node, map) ->
+                    emonClient.sendUpdate(EmonUpdate(node, map))
+                }
             }
         }
         logger.info("Iteration took $time ms")

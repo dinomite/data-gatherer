@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.inject.Inject
 import net.dinomite.dg.awair.AwairClient
-import net.dinomite.dg.data_producer.DataProducerClient
 import net.dinomite.dg.emon.EmonClient
 import net.dinomite.dg.hubitat.HubitatClient
 import net.dinomite.dg.services.AwairEmonUpdateProducer
@@ -36,10 +35,10 @@ class AwairToEmonReportingService
                 ),
                 emonClient)
 
-class PiZeroToEmonReportingService
+class DataProducerToEmonReportingService
 @Inject constructor(emonClient: EmonClient,
                     objectMapper: ObjectMapper,
                     config: DataGathererConfig) :
         EmonScheduleService(Duration.ofMinutes(1),
-                DataProducerEmonUpdateProducer(DataProducerClient(objectMapper, config.rPiZeroUrl)),
+                DataProducerEmonUpdateProducer(objectMapper, objectMapper.readValue(config.dataProducerUrls)),
                 emonClient)

@@ -22,5 +22,5 @@ class DataGathererConfig(config: CompositeConfiguration) {
     val awairDeviceIds: List<String> = config.getList(String::class.java, "AWAIR_DEVICE_IDS")
     val awairAccessToken: String = config.getString("AWAIR_ACCESS_TOKEN")
 
-    val rPiZeroUrl: String = config.getString("RPI_ZERO_URL")
+    val dataProducerUrls: String = config.getString("DATA_PRODUCER_URLS")
 }

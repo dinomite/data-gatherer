@@ -18,7 +18,6 @@ import org.apache.commons.configuration2.CompositeConfiguration
 import org.apache.commons.configuration2.PropertiesConfiguration
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder
 import org.apache.commons.configuration2.builder.fluent.Parameters
-import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler
 import org.mpierce.guice.warmup.GuiceWarmup
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -54,7 +53,7 @@ fun main(args: Array<String>) {
     val serviceManager = ServiceManager(listOf(
             injector.getInstance(HubitatToEmonReportingService::class.java),
             injector.getInstance(AwairToEmonReportingService::class.java),
-            injector.getInstance(PiZeroToEmonReportingService::class.java)
+            injector.getInstance(DataProducerToEmonReportingService::class.java)
     ))
     Runtime.getRuntime().addShutdownHook(shutdownHook(serviceManager))
 
@@ -77,7 +76,7 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
 
                     bind(HubitatToEmonReportingService::class.java)
                     bind(AwairToEmonReportingService::class.java)
-                    bind(PiZeroToEmonReportingService::class.java)
+                    bind(DataProducerToEmonReportingService::class.java)
 
                     binder().requireAtInjectOnConstructors()
                     binder().requireExactBindingAnnotations()
@@ -97,9 +96,6 @@ internal fun configuredObjectMapper() = ObjectMapper().apply {
 }
 
 private fun buildConfiguration(args: Array<String>): DataGathererConfig {
-    val params = Parameters().properties().apply {
-        setListDelimiterHandler(DefaultListDelimiterHandler(','))
-    }
 
     return CompositeConfiguration().apply {
         val configPath = Path.of(args.getOrElse(0) { throw RuntimeException("CONFIG_DIR is required\n$USAGE") })
@@ -109,7 +105,7 @@ private fun buildConfiguration(args: Array<String>): DataGathererConfig {
                 .forEach { propertiesFile ->
                     this.addConfiguration(
                             FileBasedConfigurationBuilder(PropertiesConfiguration::class.java).apply {
-                                configure(params.apply {
+                                configure(Parameters().properties().apply {
                                     setFileName(propertiesFile.toString())
                                 })
                             }.configuration

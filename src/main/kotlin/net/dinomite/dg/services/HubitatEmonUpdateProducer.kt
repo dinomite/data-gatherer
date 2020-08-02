@@ -20,7 +20,7 @@ class HubitatEmonUpdateProducer(private val devices: Map<String, DeviceType>,
     /**
      * Retrieve information for each device ID from Hubitat
      */
-    override suspend fun buildUpdate(): Map<EmonNode, Map<String, String>> {
+    override suspend fun buildUpdates(): List<Map<EmonNode, Map<String, String>>> {
         val updates = mutableMapOf<EmonNode, Map<String, String>>()
         retrieveDevices()
                 .mapNotNull { (deviceId, type, device) ->
@@ -48,7 +48,7 @@ class HubitatEmonUpdateProducer(private val devices: Map<String, DeviceType>,
                     updates[node] = map
                 }
 
-        return updates
+        return listOf(updates)
     }
 
     private fun powerDevice(device: Device): Pair<EmonNode, Map<String, String>>? {

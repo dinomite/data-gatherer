@@ -23,7 +23,7 @@ class AwairEmonUpdateProducer(private val node: EmonNode,
     /**
      * Retrieve environment information from each Awair device
      */
-    override suspend fun buildUpdate(): Map<EmonNode, Map<String, String>> {
+    override suspend fun buildUpdates(): List<Map<EmonNode, Map<String, String>>> {
         val updates = retrieveDevices()
                 .map { (deviceId, device) ->
                     if (device == null) {
@@ -46,7 +46,7 @@ class AwairEmonUpdateProducer(private val node: EmonNode,
                 .flatten()
                 .filterNotNull()
                 .toMap()
-        return mapOf(node to updates)
+        return listOf(mapOf(node to updates))
     }
 
     private suspend fun retrieveDevices(): Map<String, Device?> = withContext(Dispatchers.IO) {
