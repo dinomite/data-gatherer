@@ -13,6 +13,9 @@ dependencies {
 
     runtimeOnly("ch.qos.logback", "logback-classic", "1.2.3")
 
+    implementation("org.apache.commons", "commons-configuration2", "2.7")
+    implementation("commons-beanutils", "commons-beanutils", "1.9.4")
+
     implementation("com.fasterxml.jackson.core", "jackson-core", deps["jackson"])
     implementation("com.fasterxml.jackson.core", "jackson-databind", deps["jackson"])
     implementation("com.fasterxml.jackson.datatype", "jackson-datatype-jsr310", deps["jackson"])

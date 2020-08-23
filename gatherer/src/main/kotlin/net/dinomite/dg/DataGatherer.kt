@@ -96,7 +96,6 @@ internal fun configuredObjectMapper() = ObjectMapper().apply {
 }
 
 private fun buildConfiguration(args: Array<String>): DataGathererConfig {
-
     return CompositeConfiguration().apply {
         val configPath = Path.of(args.getOrElse(0) { throw RuntimeException("CONFIG_DIR is required\n$USAGE") })
         Files.newDirectoryStream(configPath)
