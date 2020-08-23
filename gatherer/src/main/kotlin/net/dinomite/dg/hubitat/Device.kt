@@ -1,5 +1,6 @@
 package net.dinomite.dg.hubitat
 
+import net.dinomite.dg.emon.EmonNode
 import net.dinomite.dg.hubitat.Device.Attribute.DataType.NUMBER
 
 data class Device(val id: Int, val name: String, val attributes: List<Attribute>) {
@@ -31,5 +32,7 @@ data class Device(val id: Int, val name: String, val attributes: List<Attribute>
 
 enum class DeviceType(val node: String) {
     POWER("energy"),
-    ENVIRONMENT("environment")
+    ENVIRONMENT("environment");
+
+    fun emonNode() = EmonNode(this.node)
 }

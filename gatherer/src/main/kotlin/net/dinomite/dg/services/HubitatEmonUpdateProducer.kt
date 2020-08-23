@@ -58,7 +58,7 @@ class HubitatEmonUpdateProducer(private val devices: Map<String, DeviceType>,
             null
         } else {
             logger.debug("Power usage for ${device.identity()}: $power")
-            EmonNode(POWER) to mapOf("${device.reportingName}_power" to power.toString())
+            POWER.emonNode() to mapOf("${device.reportingName}_power" to power.toString())
         }
     }
 
@@ -71,7 +71,7 @@ class HubitatEmonUpdateProducer(private val devices: Map<String, DeviceType>,
             null
         } else {
             logger.debug("Data for ${device.identity()}: $pressure, $temperature, $humidity")
-            EmonNode(ENVIRONMENT) to mapOf(
+            ENVIRONMENT.emonNode() to mapOf(
                     "${device.reportingName}_pressure" to pressure.toString(),
                     "${device.reportingName}_temperature" to temperature.toString(),
                     "${device.reportingName}_humidity" to humidity.toString()

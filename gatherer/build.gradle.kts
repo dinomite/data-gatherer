@@ -5,6 +5,8 @@ plugins {
 val deps: Map<String, String> by extra
 
 dependencies {
+    implementation(project(":model"))
+
     implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.3.3")
 
     implementation("ch.qos.logback", "logback-classic", "1.2.3")

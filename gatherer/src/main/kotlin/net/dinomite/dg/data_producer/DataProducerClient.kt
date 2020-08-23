@@ -7,6 +7,7 @@ import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.coroutines.awaitObjectResponseResult
 import com.google.common.annotations.VisibleForTesting
 import net.dinomite.dg.emon.EmonNode
+import net.dinomite.dp.NodeData
 import org.slf4j.LoggerFactory
 
 class DataProducerClient(objectMapper: ObjectMapper, private val url: String) {

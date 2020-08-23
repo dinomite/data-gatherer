@@ -2,6 +2,9 @@ package net.dinomite.dg.data_producer
 
 import net.dinomite.dg.configuredObjectMapper
 import net.dinomite.dg.emon.EmonNode
+import net.dinomite.dp.DoubleSensor
+import net.dinomite.dp.IntSensor
+import net.dinomite.dp.NodeData
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

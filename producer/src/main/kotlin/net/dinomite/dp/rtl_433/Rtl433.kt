@@ -1,6 +1,6 @@
-package data.producer.rtl_433
+package net.dinomite.dp.rtl_433
 
-import com.fasterxml.jackson.annotation.*
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -17,6 +17,10 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import net.dinomite.dg.emon.EmonNode
+import net.dinomite.dp.DoubleSensor
+import net.dinomite.dp.IntSensor
+import net.dinomite.dp.Sensor
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
 import java.io.BufferedReader
@@ -47,7 +51,7 @@ object Rtl433 {
 
             install(Routing) {
                 get("/") {
-                    call.respond(mapOf(EmonNode("environment") to nodeData))
+                    call.respond(mapOf(EmonNode("environment") to nodeData.values))
                 }
             }
 
@@ -61,13 +65,13 @@ object Rtl433 {
 
         logger.info("Startup time: ${Duration.between(start, Instant.now())}")
 
-        val input = File("/Users/dinomite/code/mine/data-producer-rtl_433").runCommand("bin/fake-rtl.sh")
+        // TODO remove sensors that don't reply for a while
+        val input = File("/Users/dinomite/code/mine/data-gatherer/producer/bin").runCommand("fake-rtl.sh")
         input.forEachLine { line ->
             objectMapper.readValue<RtlData>(line)
                     .toSensors()
                     .forEach {
-                        val foo = nodeData.getOrDefault(it.name(), it)
-                        nodeData[it.name()] = foo
+                        nodeData[it.name()] = nodeData.getOrDefault(it.name(), it)
                     }
             println(nodeData)
         }
@@ -89,6 +93,7 @@ data class RtlData(
         @JsonProperty("model") val model: String,
         @JsonProperty("id") val id: Int,
         @JsonProperty("battery_ok") val batteryOk: Int,
+        // TODO convert to fahrenheit
         @JsonProperty("temperature_C") val temperatureC: Double?,
         @JsonProperty("humidity") val humidity: Int?
 ) {
@@ -108,31 +113,4 @@ data class RtlData(
         }
         return sensors
     }
-}
-
-
-data class EmonNode @JsonCreator(mode = JsonCreator.Mode.DELEGATING) constructor(@JsonValue val value: String)
-data class NodeData @JsonCreator(mode = JsonCreator.Mode.DELEGATING) constructor(@JsonValue val sensors: List<Sensor>)
-
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes(
-        JsonSubTypes.Type(IntSensor::class, name = "IntSensor"),
-        JsonSubTypes.Type(DoubleSensor::class, name = "DoubleSensor")
-)
-interface Sensor {
-    fun stringValue(): String
-    fun name(): String
-}
-
-data class IntSensor(val name: String, private val value: Int) : Sensor {
-    override fun name(): String = name
-
-    override fun stringValue(): String = "$value"
-
-}
-
-data class DoubleSensor(val name: String, private val value: Double) : Sensor {
-    override fun name(): String = name
-
-    override fun stringValue(): String = "$value"
 }

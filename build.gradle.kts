@@ -25,15 +25,16 @@ subprojects {
 
     val deps by extra {
         mapOf(
-                "jackson" to "2.11.2"
+                "jackson" to "2.11.2",
+                "jupiter" to "5.6.2"
         )
     }
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
 
-        testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
-        testRuntimeOnly("org.junit.jupiter", "junit-jupiter-engine", "5.6.2")
+        testImplementation("org.junit.jupiter", "junit-jupiter-api", deps["jupiter"])
+        testRuntimeOnly("org.junit.jupiter", "junit-jupiter-engine", deps["jupiter"])
         testImplementation(kotlin("test-junit5"))
     }
 
