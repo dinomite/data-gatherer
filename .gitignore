@@ -5,4 +5,4 @@ out
 
 .idea
 
-config/99-keys.properties
+gatherer/config/99-keys.properties

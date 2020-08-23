@@ -22,7 +22,7 @@ RUN ./gradlew --version
 COPY /build.gradle.kts /settings.gradle.kts ./
 RUN ./gradlew tasks > /dev/null
 
-COPY /src ./src
+COPY /gatherer/src ./src
 
 RUN ./gradlew build distTar --no-daemon --stacktrace
 
@@ -30,7 +30,7 @@ RUN tar xf build/distributions/data-gatherer.tar
 
 FROM jvm
 
-ADD config /data-gatherer/config
+ADD gatherer/config /data-gatherer/config
 COPY --from=build /data-gatherer /data-gatherer/
 
 WORKDIR /data-gatherer/

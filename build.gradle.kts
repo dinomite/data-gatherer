@@ -1,47 +1,47 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.72"
-    application
+    kotlin("jvm") version "1.3.72"
+    java
     id("com.github.ben-manes.versions") version "0.29.0"
+    id("dev.jacomet.logging-capabilities") version "0.9.0"
+}
+
+loggingCapabilities {
+    enforceLogback()
 }
 
 repositories {
     jcenter()
 }
 
-dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
+subprojects {
+    apply(plugin = "java")
+    apply(plugin = "org.jetbrains.kotlin.jvm")
 
-    implementation("ch.qos.logback:logback-classic:1.2.3")
+    repositories {
+        jcenter()
+    }
 
-    implementation("org.apache.commons:commons-configuration2:2.7")
-    implementation("commons-beanutils:commons-beanutils:1.9.4")
+    val deps by extra {
+        mapOf(
+                "jackson" to "2.11.2"
+        )
+    }
 
-    implementation("com.github.kittinunf.fuel:fuel:2.2.3")
-    implementation("com.github.kittinunf.fuel:fuel-coroutines:2.2.3")
-    implementation("com.github.kittinunf.fuel:fuel-jackson:2.2.3")
+    dependencies {
+        implementation(kotlin("stdlib-jdk8"))
 
-    implementation("com.google.guava:guava:29.0-jre")
+        testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
+        testRuntimeOnly("org.junit.jupiter", "junit-jupiter-engine", "5.6.2")
+        testImplementation(kotlin("test-junit5"))
+    }
 
-    implementation("org.mpierce.guice.warmup:guice-warmup:0.1")
-    implementation("com.google.inject", "guice", "4.2.3")
-
-    implementation("com.fasterxml.jackson.core:jackson-annotations:2.11.1")
-    implementation("com.fasterxml.jackson.core:jackson-core:2.11.1")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.11.1")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.1")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.1")
-
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
-    testImplementation(kotlin("test-junit5"))
+    tasks.withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "11"
+    }
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
-}
-
-application {
-    mainClassName = "net.dinomite.dg.DataGathererKt"
+tasks.test {
+    useJUnitPlatform()
 }
