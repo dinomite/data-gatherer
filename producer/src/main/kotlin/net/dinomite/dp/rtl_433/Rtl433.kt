@@ -55,8 +55,9 @@ object Rtl433 {
                     .registerModule(JavaTimeModule())
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         }
-        // TODO async
-        val config = buildConfiguration(args)
+        val config = CompletableFuture.supplyAsync {
+            buildConfiguration(args)
+        }
 
         val server = embeddedServer(Netty, 8080) {
             install(CallLogging) { level = Level.INFO }
@@ -78,7 +79,7 @@ object Rtl433 {
         logger.info("Startup time: ${Duration.between(start, Instant.now())}")
 
         // TODO remove sensors that don't reply for a while
-        val input = runCommand(config.rtl433Command)
+        val input = runCommand(config.get().rtl433Command)
         input.forEachLine { line ->
             objectMapper.readValue<RtlData>(line)
                     .toSensors()
