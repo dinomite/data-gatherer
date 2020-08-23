@@ -11,6 +11,13 @@ import org.slf4j.LoggerFactory
 
 /**
  * Pulls information from Data Producer and packages it into EmonUpdates
+ *
+ * Data Producer format:
+ *      {
+ *          "node_name": {
+ *              "sensor_name": value
+ *          }
+ *      }
  */
 class DataProducerEmonUpdateProducer(objectMapper: ObjectMapper, dataProducerUrls: List<String>) : EmonUpdateProducer {
     private val clients = dataProducerUrls.map { DataProducerClient(objectMapper, it) }
