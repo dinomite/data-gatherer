@@ -24,7 +24,6 @@ import net.dinomite.dp.Sensor
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
 import java.io.BufferedReader
-import java.io.File
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.CompletableFuture
@@ -66,22 +65,20 @@ object Rtl433 {
         logger.info("Startup time: ${Duration.between(start, Instant.now())}")
 
         // TODO remove sensors that don't reply for a while
-        val input = File("/Users/dinomite/code/mine/data-gatherer/producer").runCommand("bin/fake-rtl.sh")
+        val input = runCommand("/Users/dinomite/code/mine/data-gatherer/producer/bin/fake-rtl.sh")
         input.forEachLine { line ->
             objectMapper.readValue<RtlData>(line)
                     .toSensors()
                     .forEach {
-                        // TODO not updating temperatures
-                        nodeData[it.name()] = nodeData.getOrDefault(it.name(), it)
+                        nodeData[it.name()] = it
                     }
             println(nodeData)
         }
     }
 }
 
-fun File.runCommand(command: String): BufferedReader {
+fun runCommand(command: String): BufferedReader {
     return ProcessBuilder(*command.split("\\s".toRegex()).toTypedArray())
-            .directory(this)
             .redirectOutput(ProcessBuilder.Redirect.PIPE)
             .redirectError(ProcessBuilder.Redirect.PIPE)
             .start()
