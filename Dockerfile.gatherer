@@ -20,18 +20,20 @@ COPY /gradlew ./
 RUN ./gradlew --version
 
 COPY /build.gradle.kts /settings.gradle.kts ./
+COPY /gatherer /gatherer
+COPY /model /model
+COPY /producer /producer
+
 RUN ./gradlew tasks > /dev/null
 
-COPY /gatherer/src ./src
+RUN ./gradlew :gatherer:build :gatherer:distTar --no-daemon --stacktrace
 
-RUN ./gradlew build distTar --no-daemon --stacktrace
-
-RUN tar xf build/distributions/data-gatherer.tar
+RUN tar xf /gatherer/build/distributions/gatherer.tar
 
 FROM jvm
 
-ADD gatherer/config /data-gatherer/config
-COPY --from=build /data-gatherer /data-gatherer/
+ADD /gatherer/config /gatherer/config
+COPY --from=build /gatherer /gatherer/
 
-WORKDIR /data-gatherer/
-ENTRYPOINT ["bin/data-gatherer", "config"]
+WORKDIR /gatherer/
+ENTRYPOINT ["bin/gatherer", "config"]
