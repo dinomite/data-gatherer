@@ -23,5 +23,5 @@ dependencies {
 }
 
 application {
-    mainClassName = "data.producer.rtl_433.AppKt"
+    mainClassName = "net.dinomite.dp.rtl_433.Rtl433"
 }
