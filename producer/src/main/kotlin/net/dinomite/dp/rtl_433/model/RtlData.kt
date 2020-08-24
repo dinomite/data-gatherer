@@ -23,7 +23,8 @@ data class RtlData(
     fun toSensors(): List<Sensor> {
         val sensors = mutableListOf<Sensor>()
         if (temperatureC != null) {
-            sensors.add(DoubleSensor(sensorKey("temperature"), temperatureC))
+            val temperatureF = temperatureC * 1.8 + 32
+            sensors.add(DoubleSensor(sensorKey("temperature"), temperatureF))
         }
         if (humidity != null) {
             sensors.add(IntSensor(sensorKey("humidity"), humidity))
