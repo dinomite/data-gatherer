@@ -1,6 +1,5 @@
 package net.dinomite.dp.rtl_433
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -10,17 +9,15 @@ import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
+import io.ktor.features.StatusPages
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.JacksonConverter
 import io.ktor.response.respond
 import io.ktor.routing.Routing
-import io.ktor.routing.get
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import net.dinomite.dg.emon.EmonNode
-import net.dinomite.dp.DoubleSensor
-import net.dinomite.dp.IntSensor
-import net.dinomite.dp.Sensor
+import net.dinomite.dp.rtl_433.model.RtlData
 import org.apache.commons.configuration2.CompositeConfiguration
 import org.apache.commons.configuration2.PropertiesConfiguration
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder
@@ -44,7 +41,7 @@ object Rtl433 {
 
     lateinit var objectMapper: ObjectMapper
 
-    private val nodeData = mutableMapOf<String, Sensor>()
+    private val nodeDataManager = NodeDataManager()
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -60,12 +57,18 @@ object Rtl433 {
         }
 
         val server = embeddedServer(Netty, 8080) {
+            install(StatusPages) {
+                exception<Throwable> { cause ->
+                    call.respond(HttpStatusCode.InternalServerError)
+                    logger.debug("Unable to handle request", cause)
+                    throw cause
+                }
+            }
+
             install(CallLogging) { level = Level.INFO }
 
             install(Routing) {
-                get("/") {
-                    call.respond(mapOf(EmonNode("environment") to nodeData.values))
-                }
+                Root(this, nodeDataManager)
             }
 
             install(ContentNegotiation) {
@@ -84,9 +87,9 @@ object Rtl433 {
             objectMapper.readValue<RtlData>(line)
                     .toSensors()
                     .forEach {
-                        nodeData[it.name()] = it
+                        nodeDataManager.updateNode(it.name(), it)
                     }
-            println(nodeData)
+            println(nodeDataManager.getValues())
         }
     }
 }
@@ -117,31 +120,4 @@ fun runCommand(command: String): BufferedReader {
             .start()
             .inputStream
             .bufferedReader()
-}
-
-data class RtlData(
-        @JsonProperty("brand") val brand: String?,
-        @JsonProperty("model") val model: String,
-        @JsonProperty("id") val id: Int,
-        @JsonProperty("battery_ok") val batteryOk: Int,
-        // TODO convert to fahrenheit
-        @JsonProperty("temperature_C") val temperatureC: Double?,
-        @JsonProperty("humidity") val humidity: Int?
-) {
-    private fun sensorKey(subSensor: String) = if (brand != null) {
-        "$brand-$model-$id-$subSensor"
-    } else {
-        "$model-$id-$subSensor"
-    }
-
-    fun toSensors(): List<Sensor> {
-        val sensors = mutableListOf<Sensor>()
-        if (temperatureC != null) {
-            sensors.add(DoubleSensor(sensorKey("temperature"), temperatureC))
-        }
-        if (humidity != null) {
-            sensors.add(IntSensor(sensorKey("humidity"), humidity))
-        }
-        return sensors
-    }
 }
