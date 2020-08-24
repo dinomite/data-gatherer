@@ -1,0 +1,12 @@
+[Unit]
+Description=Data producer service
+
+[Service]
+ExecStart=/root/producer/bin/producer /root/config/
+Restart=always
+RestartSec=10
+StartLimitInterval=4
+User=root
+
+[Install]
+WantedBy=multi-user.target
