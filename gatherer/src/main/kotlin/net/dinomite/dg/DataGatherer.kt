@@ -35,20 +35,19 @@ private const val USAGE = """
 USAGE:
     DataGathererKt CONFIG_DIR
 """
-private val STOP_DURATION: Duration = Duration.ofSeconds(5)
 
 fun main(args: Array<String>) {
     val start = Instant.now()
 
     val jacksonStartup = onDedicatedThread { configuredObjectMapper() }
+    val configStartup = onDedicatedThread { buildConfiguration(args) }
     val startupFutures = listOf(
             onDedicatedThread { GuiceWarmup.warmUp() }
     )
 
-    val config = buildConfiguration(args)
-
     startupFutures.forEach { it.get() }
-    val injector = setupGuice(jacksonStartup.get(), config)
+
+    val injector = setupGuice(jacksonStartup.get(), configStartup.get())
 
     val serviceManager = ServiceManager(listOf(
             injector.getInstance(HubitatToEmonReportingService::class.java),
@@ -117,7 +116,7 @@ private fun shutdownHook(serviceManager: ServiceManager) = object : Thread() {
     override fun run() = runBlocking {
         logger.info("Shutting down")
         try {
-            serviceManager.stopAsync().awaitStopped(STOP_DURATION)
+            serviceManager.stopAsync().awaitStopped(Duration.ofSeconds(5))
         } catch (e: TimeoutException) {
             logger.warn("Timed out while stopping services", e)
         }
