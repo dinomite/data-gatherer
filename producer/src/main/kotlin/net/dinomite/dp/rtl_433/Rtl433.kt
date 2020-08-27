@@ -5,18 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.features.CallLogging
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.StatusPages
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
-import io.ktor.jackson.JacksonConverter
-import io.ktor.response.respond
-import io.ktor.routing.Routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.jackson.*
+import io.ktor.response.*
+import io.ktor.routing.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import net.dinomite.dp.rtl_433.model.RtlData
 import org.apache.commons.configuration2.CompositeConfiguration
 import org.apache.commons.configuration2.PropertiesConfiguration
@@ -81,7 +77,6 @@ object Rtl433 {
 
         logger.info("Startup time: ${Duration.between(start, Instant.now())}")
 
-        // TODO remove sensors that don't reply for a while
         val input = runCommand(config.get().rtl433Command)
         input.forEachLine { line ->
             objectMapper.readValue<RtlData>(line)

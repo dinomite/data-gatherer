@@ -1,19 +1,17 @@
-package net.dinomite.dg.data_producer
+package net.dinomite.dp
 
-import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.coroutines.awaitObjectResponseResult
-import com.google.common.annotations.VisibleForTesting
-import net.dinomite.dg.emon.EmonNode
-import net.dinomite.dp.NodeData
+import net.dinomite.dp.model.Sensor
 import org.slf4j.LoggerFactory
 
 class DataProducerClient(objectMapper: ObjectMapper, private val url: String) {
     private val deviceDeserializer = SensorsDeserializer(objectMapper)
 
-    suspend fun retrieveData(): Map<EmonNode, NodeData>? {
+    suspend fun retrieveData(): List<Sensor>? {
         val (request, _, result) = Fuel.get(url)
                 .awaitObjectResponseResult(deviceDeserializer)
         return result.fold(
@@ -30,11 +28,6 @@ class DataProducerClient(objectMapper: ObjectMapper, private val url: String) {
     }
 }
 
-class SensorsDeserializer(private val objectMapper: ObjectMapper) : ResponseDeserializable<Map<EmonNode, NodeData>> {
-    companion object {
-        @VisibleForTesting
-        internal val typeRef = object : TypeReference<Map<EmonNode, NodeData>>() {}
-    }
-
-    override fun deserialize(content: String): Map<EmonNode, NodeData> = objectMapper.readValue(content, typeRef)
+class SensorsDeserializer(private val objectMapper: ObjectMapper) : ResponseDeserializable<List<Sensor>> {
+    override fun deserialize(content: String): List<Sensor> = objectMapper.readValue(content)
 }

@@ -1,9 +1,10 @@
 package net.dinomite.dp.rtl_433.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import net.dinomite.dp.DoubleSensor
-import net.dinomite.dp.IntSensor
-import net.dinomite.dp.Sensor
+import net.dinomite.dp.model.DoubleSensor
+import net.dinomite.dp.model.Group.ENVIRONMENT
+import net.dinomite.dp.model.IntSensor
+import net.dinomite.dp.model.Sensor
 
 data class RtlData(
         @JsonProperty("brand") val brand: String?,
@@ -24,10 +25,10 @@ data class RtlData(
         val sensors = mutableListOf<Sensor>()
         if (temperatureC != null) {
             val temperatureF = temperatureC * 1.8 + 32
-            sensors.add(DoubleSensor(sensorKey("temperature"), temperatureF))
+            sensors.add(DoubleSensor(ENVIRONMENT, sensorKey("temperature"), temperatureF))
         }
         if (humidity != null) {
-            sensors.add(IntSensor(sensorKey("humidity"), humidity))
+            sensors.add(IntSensor(ENVIRONMENT, sensorKey("humidity"), humidity))
         }
         return sensors
     }

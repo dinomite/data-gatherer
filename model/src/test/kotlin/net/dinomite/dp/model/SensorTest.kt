@@ -1,10 +1,11 @@
-package net.dinomite.dp
+package net.dinomite.dp.model
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import net.dinomite.dp.model.Group.ENVIRONMENT
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -13,7 +14,7 @@ internal class SensorTest {
             .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
             .configure(SerializationFeature.INDENT_OUTPUT, true)
 
-    private val intSensor = IntSensor("foo", 7)
+    private val intSensor = IntSensor(ENVIRONMENT, "foo", 7)
     private val json = """
         {
           "type" : "IntSensor",
@@ -34,7 +35,7 @@ internal class SensorTest {
 
     @Test
     fun foo() {
-        val sensors = listOf(IntSensor("foo", 7), DoubleSensor("bar", 9.0))
+        val sensors = listOf(IntSensor(ENVIRONMENT, "foo", 7), DoubleSensor(ENVIRONMENT, "bar", 9.0))
         println(objectMapper.writerFor(object : TypeReference<List<Sensor>>() {}).writeValueAsString(sensors))
     }
 }

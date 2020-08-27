@@ -1,7 +1,7 @@
 package net.dinomite.dg.hubitat
 
-import net.dinomite.dg.emon.EmonNode
 import net.dinomite.dg.hubitat.Device.Attribute.DataType.NUMBER
+import net.dinomite.dp.model.Group
 
 data class Device(val id: Int, val name: String, val attributes: List<Attribute>) {
     val reportingName by lazy { name.replace(' ', '_').toLowerCase() }
@@ -30,9 +30,9 @@ data class Device(val id: Int, val name: String, val attributes: List<Attribute>
     }
 }
 
-enum class DeviceType(val node: String) {
+internal enum class DeviceType(val node: String) {
     POWER("energy"),
     ENVIRONMENT("environment");
 
-    fun emonNode() = EmonNode(this.node)
+    fun group() = Group.fromString(this.node)
 }

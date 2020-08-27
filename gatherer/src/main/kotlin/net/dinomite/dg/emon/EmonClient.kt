@@ -5,6 +5,8 @@ import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.coroutines.awaitObjectResponseResult
 import com.google.inject.Inject
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import net.dinomite.dg.DataGathererConfig
 import org.slf4j.LoggerFactory
 
@@ -29,8 +31,8 @@ class HttpEmonClient
     override suspend fun sendUpdate(update: EmonUpdate) {
         val body = mapOf(
                 "apikey" to apiKey,
-                "node" to update.node.value,
-                "fulljson" to objectMapper.writeValueAsString(update.updates)
+                "node" to update.node,
+                "fulljson" to withContext(IO) { objectMapper.writeValueAsString(update.updates) }
         ).toList()
         val (request, _, result) = Fuel.get(baseUrl, body)
                 .awaitObjectResponseResult(emonUpdateResponseDeserializer)

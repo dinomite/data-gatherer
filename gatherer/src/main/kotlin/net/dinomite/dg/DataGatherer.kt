@@ -77,9 +77,9 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
 
                     bind(DataGathererConfig::class.java).toInstance(config)
 
-                    bind(HubitatToEmonReportingService::class.java)
-                    bind(AwairToEmonReportingService::class.java)
-                    bind(DataProducerToEmonReportingService::class.java)
+//                    bind(HubitatToEmonReportingService::class.java)
+//                    bind(AwairToEmonReportingService::class.java)
+                    bind(DataProducerReportingService::class.java)
 
                     bind(EventBus::class.java).toInstance(AsyncEventBus(Executors.newCachedThreadPool(
                             ThreadFactoryBuilder().setNameFormat("event-bus-%d").build()

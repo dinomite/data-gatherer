@@ -1,6 +1,6 @@
 package net.dinomite.dp.rtl_433
 
-import net.dinomite.dp.Sensor
+import net.dinomite.dp.model.Sensor
 
 class NodeDataManager {
     private val nodeData = mutableMapOf<String, Sensor>()

@@ -6,3 +6,5 @@
 /model/build
 /producer/out
 /producer/build
+
+*99-local.properties
