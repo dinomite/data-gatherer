@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.google.common.eventbus.AsyncEventBus
+import com.google.common.eventbus.EventBus
 import com.google.common.util.concurrent.ServiceManager
+import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.google.inject.AbstractModule
 import com.google.inject.Guice
 import com.google.inject.Injector
@@ -25,6 +28,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.time.Duration
 import java.time.Instant
+import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.FutureTask
 import java.util.concurrent.TimeoutException
@@ -76,6 +80,10 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
                     bind(HubitatToEmonReportingService::class.java)
                     bind(AwairToEmonReportingService::class.java)
                     bind(DataProducerToEmonReportingService::class.java)
+
+                    bind(EventBus::class.java).toInstance(AsyncEventBus(Executors.newCachedThreadPool(
+                            ThreadFactoryBuilder().setNameFormat("event-bus-%d").build()
+                    )))
 
                     binder().requireAtInjectOnConstructors()
                     binder().requireExactBindingAnnotations()
