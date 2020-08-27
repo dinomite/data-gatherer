@@ -24,7 +24,7 @@ class DataProducerClient(objectMapper: ObjectMapper, private val url: String) {
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(this::class.java.name)
+        private val logger = LoggerFactory.getLogger(DataProducerClient::class.java.name)
     }
 }
 

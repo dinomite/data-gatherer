@@ -20,10 +20,6 @@ interface EmonClient {
 class HttpEmonClient
 @Inject constructor(private val objectMapper: ObjectMapper,
                     config: DataGathererConfig) : EmonClient {
-    companion object {
-        private val logger = LoggerFactory.getLogger(this::class.java.name)
-    }
-
     private val emonUpdateResponseDeserializer = EmonUpdateResponseDeserializer(objectMapper)
     private val baseUrl = with(config) { "$emonScheme://$emonHost/$emonInputBasePath" }
     private val apiKey = config.emonApiKey
@@ -44,6 +40,10 @@ class HttpEmonClient
                 },
                 { error -> logger.warn("Request to ${request.url} got error ${error.exception}: ${error.message}") }
         )
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(HttpEmonClient::class.java.name)
     }
 }
 

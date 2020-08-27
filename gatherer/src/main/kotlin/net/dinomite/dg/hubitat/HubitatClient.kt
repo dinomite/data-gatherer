@@ -8,10 +8,6 @@ import net.dinomite.dg.DataGathererConfig
 import org.slf4j.LoggerFactory
 
 class HubitatClient(objectMapper: ObjectMapper, config: DataGathererConfig) {
-    companion object {
-        private val logger = LoggerFactory.getLogger(this::class.java.name)
-    }
-
     private val deviceDeserializer = DeviceDeserializer(objectMapper)
     private val baseUrl = with(config) { "$hubitatScheme://$hubitatHost/$hubitatDeviceBasePath" }
     private val accessToken = config.hubitatAccessToken
@@ -29,6 +25,10 @@ class HubitatClient(objectMapper: ObjectMapper, config: DataGathererConfig) {
     }
 
     private fun deviceUrl(deviceId: String) = "$baseUrl/$deviceId?access_token=$accessToken"
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(HubitatClient::class.java.name)
+    }
 }
 
 class DeviceDeserializer(private val objectMapper: ObjectMapper) : ResponseDeserializable<Device> {

@@ -16,6 +16,7 @@ import com.google.inject.Injector
 import com.google.inject.Stage
 import kotlinx.coroutines.runBlocking
 import net.dinomite.dg.emon.EmonClient
+import net.dinomite.dg.emon.EmonReporter
 import net.dinomite.dg.emon.HttpEmonClient
 import org.apache.commons.configuration2.CompositeConfiguration
 import org.apache.commons.configuration2.PropertiesConfiguration
@@ -53,6 +54,8 @@ fun main(args: Array<String>) {
 
     val injector = setupGuice(jacksonStartup.get(), configStartup.get())
 
+    injector.getInstance(EventBus::class.java).register(injector.getInstance(EmonReporter::class.java))
+
     val serviceManager = ServiceManager(listOf(
             injector.getInstance(HubitatToEmonReportingService::class.java),
             injector.getInstance(AwairToEmonReportingService::class.java),
@@ -76,6 +79,8 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
                     bind(EmonClient::class.java).toInstance(HttpEmonClient(objectMapper, config))
 
                     bind(DataGathererConfig::class.java).toInstance(config)
+
+                    bind(EmonReporter::class.java)
 
 //                    bind(HubitatToEmonReportingService::class.java)
 //                    bind(AwairToEmonReportingService::class.java)

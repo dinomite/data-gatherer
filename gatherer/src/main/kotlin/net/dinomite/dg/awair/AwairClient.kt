@@ -16,10 +16,6 @@ Authorization: Bearer example-token
  */
 class AwairClient
 @Inject constructor(objectMapper: ObjectMapper, config: DataGathererConfig) {
-    companion object {
-        private val logger = LoggerFactory.getLogger(this::class.java.name)
-    }
-
     private val deviceDeserializer = DeviceDeserializer(objectMapper)
     private val baseUrl = with(config) { "$awairScheme://$awairHost/$awairDeviceBasePath" }
     private val accessToken = config.awairAccessToken
@@ -38,6 +34,10 @@ class AwairClient
     }
 
     private fun deviceUrl(deviceId: String) = "$baseUrl/users/self/devices/awair-r2/$deviceId/air-data/latest?fahrenheit=true"
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(AwairClient::class.java.name)
+    }
 }
 
 class DeviceDeserializer(private val objectMapper: ObjectMapper) : ResponseDeserializable<Device> {

@@ -19,7 +19,6 @@ abstract class EventBusScheduledService(private val period: Duration,
     override fun scheduler(): Scheduler = Scheduler.newFixedRateSchedule(ZERO, period)
 
     override fun runOneIteration() = runBlocking {
-        logger.info("Starting update…")
         val time = measureTimeMillis {
             producer.sensorValues()
                     .forEach {
