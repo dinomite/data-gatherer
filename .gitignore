@@ -6,3 +6,5 @@ out
 .idea
 
 gatherer/config/99-keys.properties
+
+99-local.properties
