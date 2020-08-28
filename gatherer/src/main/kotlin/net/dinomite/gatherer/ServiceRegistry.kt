@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
+import net.dinomite.gatherer.awair.AwairClient
+import net.dinomite.gatherer.awair.AwairUpdateProducer
 import net.dinomite.gatherer.dp.DataProducerUpdateProducer
 import net.dinomite.gatherer.hubitat.HubitatClient
 import net.dinomite.gatherer.hubitat.HubitatUpdateProducer
@@ -23,17 +25,16 @@ class HubitatToEmonReportingService
                         HubitatClient(objectMapper, config)
                 ))
 
-//class AwairToEmonReportingService
-//@Inject constructor(emonClient: EmonClient,
-//                    objectMapper: ObjectMapper,
-//                    config: DataGathererConfig) :
-//        EmonScheduleService(Duration.ofMinutes(5),
-//                AwairEmonUpdateProducer(
-//                        config.awairEmonNode,
-//                        config.awairDeviceIds,
-//                        AwairClient(objectMapper, config)
-//                ),
-//                emonClient)
+class AwairToEmonReportingService
+@Inject constructor(objectMapper: ObjectMapper,
+                    config: DataGathererConfig,
+                    eventBus: EventBus) :
+        EventBusScheduledService(Duration.ofMinutes(5),
+                eventBus,
+                AwairUpdateProducer(
+                        config.awairDeviceIds,
+                        AwairClient(objectMapper, config)
+                ))
 
 class DataProducerReportingService
 @Inject constructor(objectMapper: ObjectMapper,
