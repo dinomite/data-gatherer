@@ -1,6 +1,8 @@
 package net.dinomtie.gatherer.dp
 
-import net.dinomite.gatherer.configuredObjectMapper
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import net.dinomite.gatherer.dp.SensorsDeserializer
 import net.dinomite.gatherer.model.DoubleSensor
 import net.dinomite.gatherer.model.Group.ENVIRONMENT
@@ -9,7 +11,10 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 internal class SensorsDeserializerTest {
-    private val sensorsDeserializer = SensorsDeserializer(configuredObjectMapper())
+    private val sensorsDeserializer = SensorsDeserializer(jacksonObjectMapper().apply {
+        registerModule(JavaTimeModule())
+        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    })
 
     @Test
     fun deserialize() {

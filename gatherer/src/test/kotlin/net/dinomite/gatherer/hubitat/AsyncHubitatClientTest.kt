@@ -1,9 +1,11 @@
 package net.dinomite.gatherer.hubitat
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import kotlinx.coroutines.runBlocking
-import net.dinomite.gatherer.configuredObjectMapper
 import net.dinomite.gatherer.hubitat.Device.Attribute.DataType.NUMBER
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -15,7 +17,10 @@ import kotlin.test.assertEquals
 internal class AsyncHubitatClientTest {
     private val wireMock = WireMockServer()
     private val accessToken = "test-access-token"
-    private val objectMapper = configuredObjectMapper()
+    private val objectMapper = jacksonObjectMapper().apply {
+        registerModule(JavaTimeModule())
+        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    }
     private val hubitatClient by lazy {
         AsyncHubitatClient("http://localhost:${wireMock.port()}", accessToken, objectMapper)
     }

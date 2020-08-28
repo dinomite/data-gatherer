@@ -1,11 +1,16 @@
 package net.dinomtie.gatherer.hubitat
 
-import net.dinomite.gatherer.configuredObjectMapper
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import net.dinomite.gatherer.hubitat.Device
 import org.junit.jupiter.api.Test
 
 internal class DeviceTest {
-    private val objectMapper = configuredObjectMapper()
+    private val objectMapper = jacksonObjectMapper().apply {
+        registerModule(JavaTimeModule())
+        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    }
 
     @Test
     fun deserializePowerDevice() {

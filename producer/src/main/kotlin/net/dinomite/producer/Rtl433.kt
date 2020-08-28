@@ -13,16 +13,11 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import net.dinomite.gatherer.config.buildConfiguration
 import net.dinomite.producer.model.RtlData
-import org.apache.commons.configuration2.CompositeConfiguration
-import org.apache.commons.configuration2.PropertiesConfiguration
-import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder
-import org.apache.commons.configuration2.builder.fluent.Parameters
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
 import java.io.BufferedReader
-import java.nio.file.Files
-import java.nio.file.Path
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.CompletableFuture
@@ -49,7 +44,7 @@ object Rtl433 {
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         }
         val config = CompletableFuture.supplyAsync {
-            buildConfiguration(args)
+            buildConfiguration(args, USAGE) { Rtl433Config(it) }
         }
 
         val server = embeddedServer(Netty, 8080) {
@@ -87,25 +82,6 @@ object Rtl433 {
             println(nodeDataManager.getValues())
         }
     }
-}
-
-// TODO factor out & share with gatherer
-private fun buildConfiguration(args: Array<String>): Rtl433Config {
-    return CompositeConfiguration().apply {
-        val configPath = Path.of(args.getOrElse(0) { throw RuntimeException("CONFIG_DIR is required\n$USAGE") })
-        Files.newDirectoryStream(configPath)
-                .filter { it.toString().endsWith("properties") }
-                .sortedDescending()
-                .forEach { propertiesFile ->
-                    this.addConfiguration(
-                            FileBasedConfigurationBuilder(PropertiesConfiguration::class.java).apply {
-                                configure(Parameters().properties().apply {
-                                    setFileName(propertiesFile.toString())
-                                })
-                            }.configuration
-                    )
-                }
-    }.let { Rtl433Config(it) }
 }
 
 fun runCommand(command: String): BufferedReader {

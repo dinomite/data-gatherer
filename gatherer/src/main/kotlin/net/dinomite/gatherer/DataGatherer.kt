@@ -15,18 +15,13 @@ import com.google.inject.Guice
 import com.google.inject.Injector
 import com.google.inject.Stage
 import kotlinx.coroutines.runBlocking
+import net.dinomite.gatherer.config.buildConfiguration
 import net.dinomite.gatherer.emon.EmonClient
 import net.dinomite.gatherer.emon.EmonReporter
 import net.dinomite.gatherer.emon.HttpEmonClient
-import org.apache.commons.configuration2.CompositeConfiguration
-import org.apache.commons.configuration2.PropertiesConfiguration
-import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder
-import org.apache.commons.configuration2.builder.fluent.Parameters
 import org.mpierce.guice.warmup.GuiceWarmup
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.nio.file.Files
-import java.nio.file.Path
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.Executors
@@ -44,8 +39,14 @@ USAGE:
 fun main(args: Array<String>) {
     val start = Instant.now()
 
-    val jacksonStartup = onDedicatedThread { configuredObjectMapper() }
-    val configStartup = onDedicatedThread { buildConfiguration(args) }
+    val jacksonStartup = onDedicatedThread {
+        jacksonObjectMapper()
+                .registerModule(JavaTimeModule())
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    }
+    val configStartup = onDedicatedThread {
+        buildConfiguration(args, USAGE) { DataGathererConfig(it) }
+    }
     val startupFutures = listOf(
             onDedicatedThread { GuiceWarmup.warmUp() }
     )
@@ -100,29 +101,6 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
 }
 
 private fun <T> onDedicatedThread(builder: () -> T): Future<T> = FutureTask { builder() }.also { Thread(it).start() }
-
-internal fun configuredObjectMapper() = jacksonObjectMapper().apply {
-    registerModule(JavaTimeModule())
-    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-}
-
-private fun buildConfiguration(args: Array<String>): DataGathererConfig {
-    return CompositeConfiguration().apply {
-        val configPath = Path.of(args.getOrElse(0) { throw RuntimeException("CONFIG_DIR is required\n$USAGE") })
-        Files.newDirectoryStream(configPath)
-                .filter { it.toString().endsWith("properties") }
-                .sortedDescending()
-                .forEach { propertiesFile ->
-                    this.addConfiguration(
-                            FileBasedConfigurationBuilder(PropertiesConfiguration::class.java).apply {
-                                configure(Parameters().properties().apply {
-                                    setFileName(propertiesFile.toString())
-                                })
-                            }.configuration
-                    )
-                }
-    }.let { DataGathererConfig(it) }
-}
 
 private fun shutdownHook(serviceManager: ServiceManager) = object : Thread() {
     override fun run() = runBlocking {

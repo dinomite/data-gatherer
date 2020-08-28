@@ -1,0 +1,30 @@
+package net.dinomite.gatherer.config
+
+import org.apache.commons.configuration2.CompositeConfiguration
+import org.apache.commons.configuration2.PropertiesConfiguration
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder
+import org.apache.commons.configuration2.builder.fluent.Parameters
+import java.nio.file.Files
+import java.nio.file.Path
+
+fun <T> buildConfiguration(
+        args: Array<String>,
+        usage: String,
+        configBuilder: (CompositeConfiguration) -> T
+): T {
+    return CompositeConfiguration().apply {
+        val configPath = Path.of(args.getOrElse(0) { throw RuntimeException("CONFIG_DIR is required\n$usage") })
+        Files.newDirectoryStream(configPath)
+                .filter { it.toString().endsWith("properties") }
+                .sortedDescending()
+                .forEach { propertiesFile ->
+                    this.addConfiguration(
+                            FileBasedConfigurationBuilder(PropertiesConfiguration::class.java).apply {
+                                configure(Parameters().properties().apply {
+                                    setFileName(propertiesFile.toString())
+                                })
+                            }.configuration
+                    )
+                }
+    }.let { configBuilder.invoke(it) }
+}

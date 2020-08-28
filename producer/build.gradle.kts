@@ -5,6 +5,7 @@ plugins {
 val deps: Map<String, String> by extra
 
 dependencies {
+    implementation(project(":config"))
     implementation(project(":model"))
 
     implementation("io.ktor", "ktor-server-core", "1.4.0")
