@@ -28,6 +28,8 @@ dependencies {
     implementation("com.fasterxml.jackson.core", "jackson-databind", deps["jackson"])
     implementation("com.fasterxml.jackson.datatype", "jackson-datatype-jsr310", deps["jackson"])
     implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", deps["jackson"])
+
+    testImplementation("com.github.tomakehurst", "wiremock", "2.27.1")
 }
 
 application {

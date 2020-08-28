@@ -5,7 +5,7 @@ package net.dinomite.gatherer
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.google.common.eventbus.AsyncEventBus
 import com.google.common.eventbus.EventBus
 import com.google.common.util.concurrent.ServiceManager
@@ -57,7 +57,7 @@ fun main(args: Array<String>) {
     injector.getInstance(EventBus::class.java).register(injector.getInstance(EmonReporter::class.java))
 
     val serviceManager = ServiceManager(listOf(
-            injector.getInstance(HubitatToEmonReportingService::class.java),
+            injector.getInstance(HubitatReportingService::class.java),
             injector.getInstance(AwairToEmonReportingService::class.java),
             injector.getInstance(DataProducerReportingService::class.java)
     ))
@@ -82,7 +82,7 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
 
                     bind(EmonReporter::class.java)
 
-                    bind(HubitatToEmonReportingService::class.java)
+                    bind(HubitatReportingService::class.java)
                     bind(AwairToEmonReportingService::class.java)
                     bind(DataProducerReportingService::class.java)
 
@@ -101,9 +101,8 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
 
 private fun <T> onDedicatedThread(builder: () -> T): Future<T> = FutureTask { builder() }.also { Thread(it).start() }
 
-internal fun configuredObjectMapper() = ObjectMapper().apply {
+internal fun configuredObjectMapper() = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
-    registerModule(KotlinModule())
     configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 }
 

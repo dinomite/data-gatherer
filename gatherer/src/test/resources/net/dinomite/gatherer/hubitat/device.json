@@ -1,0 +1,135 @@
+{
+  "id": "13",
+  "name": "Porch switch",
+  "label": "Porch switch",
+  "attributes": [
+    {
+      "name": "energy",
+      "currentValue": 14.196,
+      "dataType": "NUMBER"
+    },
+    {
+      "name": "firmware",
+      "currentValue": null,
+      "dataType": "STRING"
+    },
+    {
+      "name": "groups",
+      "currentValue": null,
+      "dataType": "NUMBER"
+    },
+    {
+      "name": "held",
+      "currentValue": 1,
+      "dataType": "NUMBER"
+    },
+    {
+      "name": "lastActivity",
+      "currentValue": "2020 Aug 28 Fri 10:39:40 AM",
+      "dataType": "STRING"
+    },
+    {
+      "name": "lastEvent",
+      "currentValue": " Tap ▲",
+      "dataType": "STRING"
+    },
+    {
+      "name": "numberOfButtons",
+      "currentValue": 8,
+      "dataType": "NUMBER"
+    },
+    {
+      "name": "power",
+      "currentValue": 0,
+      "dataType": "NUMBER"
+    },
+    {
+      "name": "pushed",
+      "currentValue": 1,
+      "dataType": "NUMBER"
+    },
+    {
+      "name": "switch",
+      "currentValue": "off",
+      "dataType": "ENUM",
+      "values": [
+        "on",
+        "off"
+      ]
+    }
+  ],
+  "capabilities": [
+    "Switch",
+    {
+      "attributes": [
+        {
+          "name": "switch",
+          "dataType": null
+        }
+      ]
+    },
+    "Configuration",
+    "Refresh",
+    "EnergyMeter",
+    {
+      "attributes": [
+        {
+          "name": "energy",
+          "dataType": null
+        }
+      ]
+    },
+    "PowerMeter",
+    {
+      "attributes": [
+        {
+          "name": "power",
+          "dataType": null
+        }
+      ]
+    },
+    "Sensor",
+    "Actuator",
+    "HoldableButton",
+    {
+      "attributes": [
+        {
+          "name": "held",
+          "dataType": null
+        }
+      ]
+    },
+    "PushableButton",
+    {
+      "attributes": [
+        {
+          "name": "numberOfButtons",
+          "dataType": null
+        },
+        {
+          "name": "pushed",
+          "dataType": null
+        }
+      ]
+    }
+  ],
+  "commands": [
+    "childOff",
+    "childOn",
+    "childRefresh",
+    "componentOff",
+    "componentOn",
+    "componentRefresh",
+    "componentSetColor",
+    "componentSetLevel",
+    "configure",
+    "off",
+    "on",
+    "refresh",
+    "reset",
+    "setAssociationGroup",
+    "setIndicator",
+    "startNotification",
+    "stopNotification"
+  ]
+}

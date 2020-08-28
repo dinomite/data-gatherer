@@ -4,15 +4,20 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.coroutines.awaitObjectResponseResult
-import net.dinomite.gatherer.DataGathererConfig
 import org.slf4j.LoggerFactory
 
-class HubitatClient(objectMapper: ObjectMapper, config: DataGathererConfig) {
-    private val deviceDeserializer = DeviceDeserializer(objectMapper)
-    private val baseUrl = with(config) { "$hubitatScheme://$hubitatHost/$hubitatDeviceBasePath" }
-    private val accessToken = config.hubitatAccessToken
+interface HubitatClient {
+    suspend fun retrieveDevice(deviceId: String): Device?
+}
 
-    suspend fun retrieveDevice(deviceId: String): Device? {
+class AsyncHubitatClient(
+        private val baseUrl: String,
+        private val accessToken: String,
+        objectMapper: ObjectMapper
+) : HubitatClient {
+    private val deviceDeserializer = DeviceDeserializer(objectMapper)
+
+    override suspend fun retrieveDevice(deviceId: String): Device? {
         val (request, _, result) = Fuel.get(deviceUrl(deviceId))
                 .awaitObjectResponseResult(deviceDeserializer)
         return result.fold(

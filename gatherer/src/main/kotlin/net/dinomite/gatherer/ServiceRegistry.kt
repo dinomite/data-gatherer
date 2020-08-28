@@ -9,12 +9,12 @@ import com.google.inject.Inject
 import net.dinomite.gatherer.awair.AwairClient
 import net.dinomite.gatherer.awair.AwairUpdateProducer
 import net.dinomite.gatherer.dp.DataProducerUpdateProducer
-import net.dinomite.gatherer.hubitat.HubitatClient
+import net.dinomite.gatherer.hubitat.AsyncHubitatClient
 import net.dinomite.gatherer.hubitat.HubitatUpdateProducer
 import net.dinomite.gatherer.services.EventBusScheduledService
 import java.time.Duration
 
-class HubitatToEmonReportingService
+class HubitatReportingService
 @Inject constructor(objectMapper: ObjectMapper,
                     config: DataGathererConfig,
                     eventBus: EventBus) :
@@ -22,7 +22,11 @@ class HubitatToEmonReportingService
                 eventBus,
                 HubitatUpdateProducer(
                         objectMapper.readValue(config.hubitatDevices),
-                        HubitatClient(objectMapper, config)
+                        AsyncHubitatClient(
+                                with(config) { "$hubitatScheme://$hubitatHost/$hubitatDeviceBasePath" },
+                                config.hubitatAccessToken,
+                                objectMapper
+                        )
                 ))
 
 class AwairToEmonReportingService
