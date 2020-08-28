@@ -31,5 +31,5 @@ dependencies {
 }
 
 application {
-    mainClassName = "net.dinomite.dg.DataGathererKt"
+    mainClassName = "net.dinomite.gatherer.DataGathererKt"
 }
