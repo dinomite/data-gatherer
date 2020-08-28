@@ -7,4 +7,4 @@
 /producer/out
 /producer/build
 
-*99-local.properties
+**99-local.properties
