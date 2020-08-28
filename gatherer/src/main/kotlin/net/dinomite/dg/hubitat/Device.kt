@@ -30,7 +30,7 @@ data class Device(val id: Int, val name: String, val attributes: List<Attribute>
     }
 }
 
-internal enum class DeviceType(val node: String) {
+enum class DeviceType(val node: String) {
     POWER("energy"),
     ENVIRONMENT("environment");
 

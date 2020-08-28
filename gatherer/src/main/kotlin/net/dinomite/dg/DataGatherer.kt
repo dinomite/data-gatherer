@@ -82,7 +82,7 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
 
                     bind(EmonReporter::class.java)
 
-//                    bind(HubitatToEmonReportingService::class.java)
+                    bind(HubitatToEmonReportingService::class.java)
 //                    bind(AwairToEmonReportingService::class.java)
                     bind(DataProducerReportingService::class.java)
 
