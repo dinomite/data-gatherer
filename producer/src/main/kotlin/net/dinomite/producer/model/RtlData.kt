@@ -1,11 +1,13 @@
 package net.dinomite.producer.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import net.dinomite.gatherer.model.DoubleSensor
+import net.dinomite.gatherer.model.DoubleValue
 import net.dinomite.gatherer.model.Group.ENVIRONMENT
-import net.dinomite.gatherer.model.IntSensor
-import net.dinomite.gatherer.model.Sensor
+import net.dinomite.gatherer.model.IntValue
 
+/**
+ * Raw data from `rtl_433 -F json` output
+ */
 data class RtlData(
         @JsonProperty("brand") val brand: String?,
         @JsonProperty("model") val model: String,
@@ -21,15 +23,15 @@ data class RtlData(
         "$model-$id-$subSensor"
     }
 
-    fun toSensors(): List<Sensor> {
-        val sensors = mutableListOf<Sensor>()
+    fun toSensorUpdates(): List<SensorUpdate<*>> {
+        val sensorUpdates = mutableListOf<SensorUpdate<*>>()
         if (temperatureC != null) {
             val temperatureF = temperatureC * 1.8 + 32
-            sensors.add(DoubleSensor(ENVIRONMENT, sensorKey("temperature"), temperatureF))
+            sensorUpdates.add(SensorUpdate(ENVIRONMENT, sensorKey("temperature"), DoubleValue(temperatureF)))
         }
         if (humidity != null) {
-            sensors.add(IntSensor(ENVIRONMENT, sensorKey("humidity"), humidity))
+            sensorUpdates.add(SensorUpdate(ENVIRONMENT, sensorKey("humidity"), IntValue(humidity)))
         }
-        return sensors
+        return sensorUpdates
     }
 }
