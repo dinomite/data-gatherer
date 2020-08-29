@@ -24,7 +24,7 @@ internal class EventBusScheduledServiceTest {
             // A producer that stores it's last update in an ABC, halting further updates until that is take()-en
             val producer = object : UpdateProducer {
                 val lastUpdate = ArrayBlockingQueue<Sensor>(1)
-                override suspend fun sensorValues(): List<Sensor> {
+                override suspend fun sensors(): List<Sensor> {
                     val update = IntSensor(Group.ENVIRONMENT, Instant.now().toString(), 77)
                     lastUpdate.offer(update)
                     return listOf(update)

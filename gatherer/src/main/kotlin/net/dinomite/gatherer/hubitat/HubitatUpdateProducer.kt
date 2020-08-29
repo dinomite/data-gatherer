@@ -19,7 +19,7 @@ class HubitatUpdateProducer(private val devices: Map<String, DeviceType>,
     /**
      * Retrieve information for each device ID from Hubitat
      */
-    override suspend fun sensorValues(): List<Sensor> {
+    override suspend fun sensors(): List<Sensor> {
         val retrieveDevices = retrieveDevices()
         return retrieveDevices
                 .mapNotNull { (deviceId, type, device) ->

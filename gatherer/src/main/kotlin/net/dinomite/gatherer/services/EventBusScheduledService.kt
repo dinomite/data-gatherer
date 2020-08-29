@@ -20,7 +20,7 @@ abstract class EventBusScheduledService(private val period: Duration,
 
     override fun runOneIteration() = runBlocking {
         val time = measureTimeMillis {
-            producer.sensorValues()
+            producer.sensors()
                     .forEach {
                         logger.debug("Posting: {}", it)
                         eventBus.post(it)

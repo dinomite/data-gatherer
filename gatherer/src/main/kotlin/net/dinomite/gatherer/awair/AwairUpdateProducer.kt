@@ -17,7 +17,7 @@ class AwairUpdateProducer(private val devices: List<String>,
     /**
      * Retrieve environment information from each Awair device
      */
-    override suspend fun sensorValues(): List<net.dinomite.gatherer.model.Sensor> {
+    override suspend fun sensors(): List<net.dinomite.gatherer.model.Sensor> {
         return retrieveDevices()
                 .map { (deviceId, device) ->
                     if (device == null) {

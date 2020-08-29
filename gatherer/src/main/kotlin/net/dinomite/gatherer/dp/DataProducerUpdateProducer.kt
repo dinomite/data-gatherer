@@ -13,15 +13,14 @@ import net.dinomite.gatherer.services.UpdateProducer
  *
  * Data Producer format:
  *      [
- *          {
- *              <Sensor>
- *          }
+ *          { <Sensor> },
+ *          ...
  *      [
  */
 class DataProducerUpdateProducer(objectMapper: ObjectMapper, dataProducerUrls: List<String>) : UpdateProducer {
     private val clients = dataProducerUrls.map { DataProducerClient(objectMapper, it) }
 
-    override suspend fun sensorValues(): List<Sensor> {
+    override suspend fun sensors(): List<Sensor> {
         // TODO remove sensors that don't reply for a while
         return clients
                 .map { client ->

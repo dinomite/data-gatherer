@@ -20,7 +20,7 @@ internal class HubitatUpdateProducerTest {
 
     @Test
     fun sensorValues() {
-        val actual = runBlocking { hubitatUpdateProducer.sensorValues() }
+        val actual = runBlocking { hubitatUpdateProducer.sensors() }
         val expected = listOf(DoubleSensor(ENERGY, "foodevice_power", 9.0))
         assertEquals(expected, actual)
     }

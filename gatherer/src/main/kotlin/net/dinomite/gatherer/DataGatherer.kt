@@ -75,17 +75,14 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
             Stage.PRODUCTION,
             object : AbstractModule() {
                 override fun configure() {
-                    bind(ObjectMapper::class.java).toInstance(objectMapper)
-
-                    bind(EmonClient::class.java).toInstance(HttpEmonClient(objectMapper, config))
-
-                    bind(DataGathererConfig::class.java).toInstance(config)
-
                     bind(EmonReporter::class.java)
-
+                    bind(EmonClient::class.java).to(HttpEmonClient::class.java)
                     bind(HubitatReportingService::class.java)
                     bind(AwairToEmonReportingService::class.java)
                     bind(DataProducerReportingService::class.java)
+
+                    bind(ObjectMapper::class.java).toInstance(objectMapper)
+                    bind(DataGathererConfig::class.java).toInstance(config)
 
                     bind(EventBus::class.java).toInstance(AsyncEventBus(Executors.newCachedThreadPool(
                             ThreadFactoryBuilder().setNameFormat("event-bus-%d").build()

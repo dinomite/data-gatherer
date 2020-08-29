@@ -6,5 +6,5 @@ interface UpdateProducer {
     /**
      * Produce a list of Sensors
      */
-    suspend fun sensorValues(): List<Sensor>
+    suspend fun sensors(): List<Sensor>
 }

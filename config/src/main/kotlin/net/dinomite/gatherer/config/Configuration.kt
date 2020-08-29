@@ -12,8 +12,12 @@ fun <T> buildConfiguration(
         usage: String,
         configBuilder: (CompositeConfiguration) -> T
 ): T {
+    val configPath = Path.of(args.getOrNull(0)) ?: throw RuntimeException("CONFIG_DIR is required\n$usage")
+    if (!configPath.toFile().isDirectory) {
+        throw RuntimeException("${configPath.toAbsolutePath()} isn't a directory")
+    }
+
     return CompositeConfiguration().apply {
-        val configPath = Path.of(args.getOrElse(0) { throw RuntimeException("CONFIG_DIR is required\n$usage") })
         Files.newDirectoryStream(configPath)
                 .filter { it.toString().endsWith("properties") }
                 .sortedDescending()
