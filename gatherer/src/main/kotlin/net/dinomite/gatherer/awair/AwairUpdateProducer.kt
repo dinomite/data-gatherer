@@ -4,8 +4,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
-import net.dinomite.gatherer.model.DoubleValue
 import net.dinomite.gatherer.model.Group.ENVIRONMENT
+import net.dinomite.gatherer.model.Observation
 import net.dinomite.gatherer.services.UpdateProducer
 import org.slf4j.LoggerFactory
 
@@ -34,7 +34,7 @@ class AwairUpdateProducer(private val devices: List<String>,
                                 net.dinomite.gatherer.model.Sensor(
                                         ENVIRONMENT,
                                         "awair_${deviceId}_${comp.name.toLowerCase()}",
-                                        DoubleValue(value)
+                                        Observation(value)
                                 )
                             }
                         }

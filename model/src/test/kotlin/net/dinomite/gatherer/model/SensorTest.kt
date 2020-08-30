@@ -15,7 +15,7 @@ internal class SensorTest {
             .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
             .configure(SerializationFeature.INDENT_OUTPUT, true)
 
-    private val intSensor = Sensor(ENVIRONMENT, "foo", IntValue(7))
+    private val intSensor = Sensor(ENVIRONMENT, "foo", Observation(7))
 
     @Test
     fun roundtrip() {

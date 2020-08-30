@@ -4,9 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import net.dinomite.gatherer.dp.SensorsDeserializer
-import net.dinomite.gatherer.model.DoubleValue
 import net.dinomite.gatherer.model.Group.ENVIRONMENT
-import net.dinomite.gatherer.model.IntValue
+import net.dinomite.gatherer.model.Observation
 import net.dinomite.gatherer.model.Sensor
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -20,9 +19,9 @@ internal class SensorsDeserializerTest {
     @Test
     fun deserialize() {
         val expected = listOf(
-                Sensor(ENVIRONMENT, "Acurite-Tower-12090-temperature", DoubleValue(73.75999999999999)),
-                Sensor(ENVIRONMENT, "Acurite-Tower-12090-humidity", IntValue(54)),
-                Sensor(ENVIRONMENT, "OS-Oregon-THN132N-25-temperature", DoubleValue(91.4))
+                Sensor(ENVIRONMENT, "Acurite-Tower-12090-temperature", Observation(73.75999999999999)),
+                Sensor(ENVIRONMENT, "Acurite-Tower-12090-humidity", Observation(54)),
+                Sensor(ENVIRONMENT, "OS-Oregon-THN132N-25-temperature", Observation(91.4))
         )
 
         val json = """[

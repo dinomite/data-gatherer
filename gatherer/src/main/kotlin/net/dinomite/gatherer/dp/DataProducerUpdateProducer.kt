@@ -34,7 +34,7 @@ class DataProducerUpdateProducer(objectMapper: ObjectMapper, dataProducerUrls: L
                                         if (it.withinLast(Duration.ofMinutes(15))) {
                                             it
                                         } else {
-                                            logger.info("Discarding update for ${it.name} from ${it.values.first().timestamp}")
+                                            logger.info("Discarding update for ${it.name} from ${it.observations.first().timestamp}")
                                             null
                                         }
                                     }

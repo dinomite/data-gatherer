@@ -20,7 +20,7 @@ data class Device(val id: Int, val name: String, val attributes: List<Attribute>
             DATE
         }
 
-        fun doubleValue(): Double? {
+        fun Value(): Double? {
             if (dataType != NUMBER) {
                 throw IllegalAccessError("DataType is $dataType, not $NUMBER")
             }

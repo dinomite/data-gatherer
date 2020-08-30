@@ -5,8 +5,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import net.dinomite.gatherer.hubitat.DeviceType.POWER
-import net.dinomite.gatherer.model.DoubleValue
 import net.dinomite.gatherer.model.Group.ENERGY
+import net.dinomite.gatherer.model.Observation
 import net.dinomite.gatherer.model.Sensor
 import net.dinomite.gatherer.services.UpdateProducer
 import org.slf4j.LoggerFactory
@@ -39,13 +39,13 @@ class HubitatUpdateProducer(private val devices: Map<String, DeviceType>,
     }
 
     private fun powerDevice(device: Device): Sensor? {
-        val power = device.attribute("power").doubleValue()
+        val power = device.attribute("power").Value()
         return if (power == null) {
             logger.warn("Power value for <${device.identity()}> is null")
             null
         } else {
             logger.debug("Power usage for ${device.identity()}: $power")
-            Sensor(ENERGY, "${device.reportingName}_power", DoubleValue(power))
+            Sensor(ENERGY, "${device.reportingName}_power", Observation(power))
         }
     }
 

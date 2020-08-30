@@ -11,7 +11,7 @@ class NodeDataManager {
         if (sensor == null) {
             nodeData[sensorUpdate.name] = sensorUpdate.toSensor()
         }  else {
-            nodeData[sensorUpdate.name] = sensor.apply { values.offer(sensorUpdate.value) }
+            nodeData[sensorUpdate.name] = sensor.apply { observations.offer(sensorUpdate.observation) }
         }
     }
 
