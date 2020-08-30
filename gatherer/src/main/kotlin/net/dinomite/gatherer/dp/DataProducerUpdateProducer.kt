@@ -7,6 +7,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import net.dinomite.gatherer.model.Sensor
 import net.dinomite.gatherer.services.UpdateProducer
+import org.slf4j.LoggerFactory
 import java.time.Duration
 
 /**
@@ -33,6 +34,7 @@ class DataProducerUpdateProducer(objectMapper: ObjectMapper, dataProducerUrls: L
                                         if (it.withinLast(Duration.ofMinutes(15))) {
                                             it
                                         } else {
+                                            logger.info("Discarding update for ${it.name} from ${it.values.first().timestamp}")
                                             null
                                         }
                                     }
@@ -41,5 +43,9 @@ class DataProducerUpdateProducer(objectMapper: ObjectMapper, dataProducerUrls: L
                 }
                 .awaitAll()
                 .flatten()
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(this::class.java.name)
     }
 }
