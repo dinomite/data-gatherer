@@ -1,5 +1,6 @@
 package net.dinomite.producer
 
+import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -77,12 +78,16 @@ object Rtl433 {
 
         val input = runCommand(config.get().rtl433Command)
         input.forEachLine { line ->
-            objectMapper.readValue<RtlData>(line)
-                    .toSensorUpdates()
-                    .forEach {
-                        nodeDataManager.updateNode(it)
-                    }
-            println(nodeDataManager.getValues())
+            try {
+                objectMapper.readValue<RtlData>(line)
+                        .toSensorUpdates()
+                        .forEach {
+                            nodeDataManager.updateNode(it)
+                        }
+                println(nodeDataManager.getValues())
+            } catch (e: JsonProcessingException) {
+                logger.warn("Couldn't process JSON", e)
+            }
         }
     }
 }
