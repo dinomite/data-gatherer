@@ -41,8 +41,8 @@ subprojects {
     tasks.withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "11"
     }
-}
 
-tasks.test {
-    useJUnitPlatform()
+    tasks.test {
+        useJUnitPlatform()
+    }
 }

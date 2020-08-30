@@ -19,6 +19,29 @@ data class Sensor(
         }
         return false
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Sensor
+
+        if (group != other.group) return false
+        if (name != other.name) return false
+        if (observations.size != other.observations.size) return false
+        observations.forEachIndexed { index, observation ->
+            if (observation != other.observations[index]) return false
+        }
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = group.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + observations.hashCode()
+        return result
+    }
 }
 
 data class Observation<T>(

@@ -1,24 +1,13 @@
 package net.dinomite.gatherer.hubitat
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.MapperFeature
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import net.dinomite.gatherer.hubitat.Device.Attribute
 import net.dinomite.gatherer.hubitat.Device.Attribute.DataType.*
+import net.dinomtie.gatherer.testObjectMapper
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 internal class DeviceTest {
-    private val objectMapper = jacksonObjectMapper().apply {
-        registerModule(JavaTimeModule())
-        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    }
-            .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
-            .configure(SerializationFeature.INDENT_OUTPUT, true)
-
     private val deviceJson = javaClass.getResource("/net/dinomite/gatherer/hubitat/device.json").readText()
 
     @Test
@@ -35,6 +24,6 @@ internal class DeviceTest {
                 Attribute("pushed", "1", NUMBER),
                 Attribute("switch", "off", ENUM)
         ))
-        assertEquals(expected, objectMapper.readValue(deviceJson))
+        assertEquals(expected, testObjectMapper().readValue(deviceJson))
     }
 }
