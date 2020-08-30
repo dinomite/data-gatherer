@@ -6,6 +6,9 @@ val deps: Map<String, String> by extra
 
 dependencies {
     implementation(project(":config"))
+    // TODO these should be provided as an API dep of :config
+    implementation("org.apache.commons", "commons-configuration2", "2.7")
+    runtimeOnly("commons-beanutils", "commons-beanutils", "1.9.4")
     implementation(project(":model"))
 
     implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.3.3")

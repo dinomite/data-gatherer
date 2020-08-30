@@ -12,11 +12,11 @@ class EmonReporter
 @Inject constructor(private val emonClient: EmonClient) {
     @Subscribe
     fun sendSensorDataToEmon(sensor: Sensor) = runBlocking {
-        logger.info("Sending ${sensor.name()} to EmonCMS")
+        logger.info("Sending ${sensor.name} to EmonCMS")
         val time = measureTimeMillis {
             emonClient.sendUpdate(EmonUpdate(
-                    sensor.group().reportingValue(),
-                    mapOf(sensor.name() to sensor.stringValue())
+                    sensor.group.reportingValue(),
+                    mapOf(sensor.name to "${sensor.values.first().value()}")
             ))
         }
         logger.debug("Sending data to EmonCMS took $time ms")

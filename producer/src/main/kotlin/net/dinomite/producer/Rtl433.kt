@@ -1,5 +1,6 @@
 package net.dinomite.producer
 
+import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -14,6 +15,7 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import net.dinomite.gatherer.config.buildConfiguration
+import net.dinomite.producer.model.DataProducerResponse
 import net.dinomite.producer.model.RtlData
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
@@ -58,13 +60,15 @@ object Rtl433 {
 
             install(CallLogging) { level = Level.INFO }
 
-            install(Routing) {
-                Root(this, nodeDataManager)
-            }
-
             install(ContentNegotiation) {
                 objectMapper = jacksonFuture.get()
                 register(ContentType.Application.Json, JacksonConverter(objectMapper))
+            }
+
+            install(Routing) {
+                get("/") {
+                    call.respond(DataProducerResponse(nodeDataManager.getValues()))
+                }
             }
         }
 
@@ -74,12 +78,16 @@ object Rtl433 {
 
         val input = runCommand(config.get().rtl433Command)
         input.forEachLine { line ->
-            objectMapper.readValue<RtlData>(line)
-                    .toSensors()
-                    .forEach {
-                        nodeDataManager.updateNode(it.name(), it)
-                    }
-            println(nodeDataManager.getValues())
+            try {
+                objectMapper.readValue<RtlData>(line)
+                        .toSensorUpdates()
+                        .forEach {
+                            nodeDataManager.updateNode(it)
+                        }
+                println(nodeDataManager.getValues())
+            } catch (e: JsonProcessingException) {
+                logger.warn("Couldn't process JSON", e)
+            }
         }
     }
 }

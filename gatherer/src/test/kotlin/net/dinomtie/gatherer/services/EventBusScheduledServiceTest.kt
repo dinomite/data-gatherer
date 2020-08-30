@@ -4,7 +4,7 @@ import com.google.common.eventbus.AsyncEventBus
 import com.google.common.eventbus.Subscribe
 import kotlinx.coroutines.runBlocking
 import net.dinomite.gatherer.model.Group
-import net.dinomite.gatherer.model.IntSensor
+import net.dinomite.gatherer.model.IntValue
 import net.dinomite.gatherer.model.Sensor
 import net.dinomite.gatherer.services.EventBusScheduledService
 import net.dinomite.gatherer.services.UpdateProducer
@@ -25,7 +25,7 @@ internal class EventBusScheduledServiceTest {
             val producer = object : UpdateProducer {
                 val lastUpdate = ArrayBlockingQueue<Sensor>(1)
                 override suspend fun sensors(): List<Sensor> {
-                    val update = IntSensor(Group.ENVIRONMENT, Instant.now().toString(), 77)
+                    val update = Sensor(Group.ENVIRONMENT, Instant.now().toString(), IntValue(77))
                     lastUpdate.offer(update)
                     return listOf(update)
                 }

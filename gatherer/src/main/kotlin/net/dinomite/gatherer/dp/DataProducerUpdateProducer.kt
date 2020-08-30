@@ -7,6 +7,8 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import net.dinomite.gatherer.model.Sensor
 import net.dinomite.gatherer.services.UpdateProducer
+import org.slf4j.LoggerFactory
+import java.time.Duration
 
 /**
  * Pulls information from Data Producer and packages it into EmonUpdates
@@ -21,17 +23,29 @@ class DataProducerUpdateProducer(objectMapper: ObjectMapper, dataProducerUrls: L
     private val clients = dataProducerUrls.map { DataProducerClient(objectMapper, it) }
 
     override suspend fun sensors(): List<Sensor> {
-        // TODO remove sensors that don't reply for a while
         return clients
                 .map { client ->
                     withContext(Dispatchers.IO) {
                         async {
                             client.retrieveData()
                                     .orEmpty()
+                                    .mapNotNull {
+                                        // TODO within x update cycles
+                                        if (it.withinLast(Duration.ofMinutes(15))) {
+                                            it
+                                        } else {
+                                            logger.info("Discarding update for ${it.name} from ${it.values.first().timestamp}")
+                                            null
+                                        }
+                                    }
                         }
                     }
                 }
                 .awaitAll()
                 .flatten()
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(this::class.java.name)
     }
 }
