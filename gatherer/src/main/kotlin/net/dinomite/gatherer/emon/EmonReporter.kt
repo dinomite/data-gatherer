@@ -16,7 +16,7 @@ class EmonReporter
         val time = measureTimeMillis {
             emonClient.sendUpdate(EmonUpdate(
                     sensor.group.reportingValue(),
-                    mapOf(sensor.name to "${sensor.observations.first().value()}")
+                    mapOf(sensor.name to "${sensor.observations.first().value}")
             ))
         }
         logger.debug("Sending data to EmonCMS took $time ms")

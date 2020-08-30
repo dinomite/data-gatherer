@@ -8,7 +8,7 @@ import java.time.Instant
 data class Sensor(
         @JsonProperty("group") val group: Group,
         @JsonProperty("name") val name: String,
-        @JsonProperty("values") val observations: CircularFifoQueue<Observation<*>>
+        @JsonProperty("observations") val observations: CircularFifoQueue<Observation<*>>
 ) {
     constructor(group: Group, name: String, observation: Observation<*>) :
             this(group, name, CircularFifoQueue<Observation<*>>(10).apply { offer(observation) })
@@ -24,6 +24,4 @@ data class Sensor(
 data class Observation<T>(
         @JsonProperty("value") val value: T,
         @JsonProperty("timestamp") val timestamp: Instant = Instant.now()
-) {
-    fun value(): T = value
-}
+)
