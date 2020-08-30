@@ -20,6 +20,7 @@ COPY /gradlew ./
 RUN ./gradlew --version
 
 COPY /build.gradle.kts /settings.gradle.kts ./
+COPY /config /gatherer
 COPY /gatherer /gatherer
 COPY /model /model
 COPY /producer /producer
