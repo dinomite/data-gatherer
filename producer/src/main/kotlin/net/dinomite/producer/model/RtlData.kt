@@ -1,6 +1,7 @@
 package net.dinomite.producer.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import net.dinomite.gatherer.model.Group
 import net.dinomite.gatherer.model.Group.ENVIRONMENT
 import net.dinomite.gatherer.model.Observation
 
@@ -22,15 +23,15 @@ data class RtlData(
     }
 
     fun toSensorUpdates(): List<SensorUpdate<*>> {
-        val sensorUpdates = mutableListOf<SensorUpdate<*>>()
-        if (temperatureC != null) {
-            val temperatureF = temperatureC * 1.8 + 32
-            sensorUpdates.add(SensorUpdate(ENVIRONMENT, sensorKey("temperature"), Observation(temperatureF)))
-        }
-        if (humidity != null) {
-            sensorUpdates.add(SensorUpdate(ENVIRONMENT, sensorKey("humidity"), Observation(humidity)))
-        }
-//        sensorUpdates.add(SensorUpdate(BATTERY, sensorKey("battery"), Value(batteryOk == 1)))
-        return sensorUpdates
+        return mutableListOf<SensorUpdate<*>>().apply {
+            temperatureC?.let {
+                val temperatureF = temperatureC * 1.8 + 32
+                add(SensorUpdate(ENVIRONMENT, sensorKey("temperature"), Observation(temperatureF)))
+            }
+            humidity?.let {
+                add(SensorUpdate(ENVIRONMENT, sensorKey("humidity"), Observation(humidity)))
+            }
+            add(SensorUpdate(Group.BATTERY, sensorKey("battery"), Observation(batteryOk)))
+        }.toList()
     }
 }
