@@ -5,6 +5,7 @@ plugins {
     java
     id("com.github.ben-manes.versions") version "0.29.0"
     id("dev.jacomet.logging-capabilities") version "0.9.0"
+    jacoco
 }
 
 loggingCapabilities {
@@ -18,6 +19,7 @@ repositories {
 subprojects {
     apply(plugin = "java")
     apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "jacoco")
 
     repositories {
         jcenter()
@@ -44,5 +46,13 @@ subprojects {
 
     tasks.test {
         useJUnitPlatform()
+    }
+
+    tasks.jacocoTestReport {
+        dependsOn(tasks.test)
+        reports {
+            xml.isEnabled = true
+            html.isEnabled = false
+        }
     }
 }
