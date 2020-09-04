@@ -53,7 +53,7 @@ object Rtl433 {
             install(StatusPages) {
                 exception<Throwable> { cause ->
                     call.respond(HttpStatusCode.InternalServerError)
-                    logger.debug("Unable to handle request", cause)
+                    logger.warn("Unable to handle request", cause)
                     throw cause
                 }
             }
@@ -84,7 +84,7 @@ object Rtl433 {
                         .forEach {
                             nodeDataManager.updateNode(it)
                         }
-                println(nodeDataManager.getValues())
+                logger.debug(nodeDataManager.getValues().toString())
             } catch (e: JsonProcessingException) {
                 logger.warn("Couldn't process JSON", e)
             }
