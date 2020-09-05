@@ -30,6 +30,8 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype", "jackson-datatype-jsr310", deps["jackson"])
     implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", deps["jackson"])
 
+    implementation("org.influxdb", "influxdb-java", "2.20")
+
     testImplementation("com.github.tomakehurst", "wiremock", "2.27.1")
 }
 

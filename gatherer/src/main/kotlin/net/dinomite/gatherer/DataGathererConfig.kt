@@ -1,9 +1,16 @@
 package net.dinomite.gatherer
 
-import net.dinomite.gatherer.model.Group
 import org.apache.commons.configuration2.CompositeConfiguration
 
 class DataGathererConfig(config: CompositeConfiguration) {
+    val awairScheme: String = config.getString("AWAIR_SCHEME")
+    val awairHost: String = config.getString("AWAIR_HOST")
+    val awairDeviceBasePath: String = config.getString("AWAIR_DEVICE_BASE_PATH")
+    val awairDeviceIds: List<String> = config.getList(String::class.java, "AWAIR_DEVICE_IDS")
+    val awairAccessToken: String = config.getString("AWAIR_ACCESS_TOKEN")
+
+    val dataProducerUrls: String = config.getString("DATA_PRODUCER_URLS")
+
     val emonScheme: String = config.getString("EMON_SCHEME")
     val emonHost: String = config.getString("EMON_HOST")
     val emonInputBasePath: String = config.getString("EMON_INPUT_BASE_PATH")
@@ -15,12 +22,7 @@ class DataGathererConfig(config: CompositeConfiguration) {
     val hubitatDevices: String = config.getList("HUBITAT_DEVICES").joinToString()
     val hubitatAccessToken: String = config.getString("HUBITAT_ACCESS_TOKEN")
 
-    val awairGroup = Group.fromString(config.getString("AWAIR_EMON_NODE"))
-    val awairScheme: String = config.getString("AWAIR_SCHEME")
-    val awairHost: String = config.getString("AWAIR_HOST")
-    val awairDeviceBasePath: String = config.getString("AWAIR_DEVICE_BASE_PATH")
-    val awairDeviceIds: List<String> = config.getList(String::class.java, "AWAIR_DEVICE_IDS")
-    val awairAccessToken: String = config.getString("AWAIR_ACCESS_TOKEN")
-
-    val dataProducerUrls: String = config.getString("DATA_PRODUCER_URLS")
+    val influxDbUrl: String = config.getString("INFLUXDB_URL")
+    val influxDbUsername: String = config.getString("INFLUXDB_USERNAME")
+    val influxDbPassword: String = config.getString("INFLUXDB_PASSWORD")
 }

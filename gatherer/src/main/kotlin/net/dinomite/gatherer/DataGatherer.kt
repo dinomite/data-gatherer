@@ -20,6 +20,7 @@ import net.dinomite.gatherer.config.buildConfiguration
 import net.dinomite.gatherer.emon.EmonClient
 import net.dinomite.gatherer.emon.EmonReporter
 import net.dinomite.gatherer.emon.HttpEmonClient
+import net.dinomite.gatherer.influxdb.InfluxDbReporter
 import org.mpierce.guice.warmup.GuiceWarmup
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -58,6 +59,7 @@ fun main(args: Array<String>) {
     val injector = setupGuice(jacksonStartup.get(), configStartup.get())
 
     injector.getInstance(EventBus::class.java).register(injector.getInstance(EmonReporter::class.java))
+    injector.getInstance(EventBus::class.java).register(injector.getInstance(InfluxDbReporter::class.java))
 
     val serviceManager = ServiceManager(listOf(
             injector.getInstance(HubitatReportingService::class.java),
@@ -79,6 +81,9 @@ private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): 
                 override fun configure() {
                     bind(EmonReporter::class.java)
                     bind(EmonClient::class.java).to(HttpEmonClient::class.java)
+
+                    bind(InfluxDbReporter::class.java)
+
                     bind(HubitatReportingService::class.java)
                     bind(AwairToEmonReportingService::class.java)
                     bind(DataProducerReportingService::class.java)

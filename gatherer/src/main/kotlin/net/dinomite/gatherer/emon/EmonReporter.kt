@@ -7,9 +7,9 @@ import net.dinomite.gatherer.model.Sensor
 import org.slf4j.LoggerFactory
 import kotlin.system.measureTimeMillis
 
-@Suppress("UnstableApiUsage")
 class EmonReporter
 @Inject constructor(private val emonClient: EmonClient) {
+    @Suppress("UnstableApiUsage")
     @Subscribe
     fun sendSensorDataToEmon(sensor: Sensor) = runBlocking {
         logger.info("Sending ${sensor.name} to EmonCMS")
