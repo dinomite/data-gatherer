@@ -27,6 +27,7 @@ subprojects {
 
     val deps by extra {
         mapOf(
+                "fuel" to "2.2.3",
                 "jackson" to "2.11.2",
                 "jupiter" to "5.6.2"
         )

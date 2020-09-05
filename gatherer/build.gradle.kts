@@ -15,9 +15,9 @@ dependencies {
 
     implementation("ch.qos.logback", "logback-classic", "1.2.3")
 
-    implementation("com.github.kittinunf.fuel", "fuel", "2.2.3")
-    implementation("com.github.kittinunf.fuel", "fuel-coroutines", "2.2.3")
-    implementation("com.github.kittinunf.fuel", "fuel-jackson", "2.2.3")
+    implementation("com.github.kittinunf.fuel", "fuel", deps["fuel"])
+    implementation("com.github.kittinunf.fuel", "fuel-coroutines", deps["fuel"])
+    implementation("com.github.kittinunf.fuel", "fuel-jackson", deps["fuel"])
 
     implementation("com.google.guava", "guava", "29.0-jre")
 
