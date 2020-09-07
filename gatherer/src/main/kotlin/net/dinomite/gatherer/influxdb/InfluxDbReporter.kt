@@ -29,7 +29,7 @@ class InfluxDbReporter
         influxDb.setDatabase(dbName)
                 .write(Point.measurement(sensor.name)
                         .time(observation.timestamp.epochSecond, TimeUnit.SECONDS)
-                        .addField("value", observation.value.toString())
+                        .addField("value", observation.value)
                         .build())
     }
 

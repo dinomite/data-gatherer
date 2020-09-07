@@ -44,7 +44,7 @@ data class Sensor(
     }
 }
 
-data class Observation<T>(
+data class Observation<out T : Number>(
         @JsonProperty("value") val value: T,
         @JsonProperty("timestamp") val timestamp: Instant = Instant.now()
 )
