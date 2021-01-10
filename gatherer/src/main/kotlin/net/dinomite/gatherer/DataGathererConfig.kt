@@ -25,4 +25,5 @@ class DataGathererConfig(config: CompositeConfiguration) {
     val influxDbUrl: String = config.getString("INFLUXDB_URL")
     val influxDbUsername: String = config.getString("INFLUXDB_USERNAME")
     val influxDbPassword: String = config.getString("INFLUXDB_PASSWORD")
+    val influxDbDeviceNames: String = config.getString("INFLUXDB_DEVICE_NAMES")
 }

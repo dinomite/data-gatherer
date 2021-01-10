@@ -1,5 +1,7 @@
 package net.dinomite.gatherer.influxdb
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
 import net.dinomite.gatherer.DataGathererConfig
@@ -14,9 +16,10 @@ import java.util.concurrent.TimeUnit
  * Send Sensor data to InfluxDB.  The Sensor group is used for the DB, name for the measurement, and value for the value.
  */
 class InfluxDbReporter
-@Inject constructor(config: DataGathererConfig) {
+@Inject constructor(config: DataGathererConfig, objectMapper: ObjectMapper) {
     private val influxDb = InfluxDBFactory
-            .connect(config.influxDbUrl, config.influxDbUsername, config.influxDbPassword)
+        .connect(config.influxDbUrl, config.influxDbUsername, config.influxDbPassword)
+    private val deviceNames: Map<String, String> = objectMapper.readValue(config.influxDbDeviceNames)
     private val knownDbs = mutableSetOf<String>()
 
     @Suppress("UnstableApiUsage")
@@ -25,12 +28,17 @@ class InfluxDbReporter
         logger.info("Sending ${sensor.name} to InfluxDB")
         val observation = sensor.observations.peek()
         val dbName = sensor.group.reportingValue()
+
         createDb(dbName)
+
+        val name = deviceNames[sensor.name] ?: sensor.name
         influxDb.setDatabase(dbName)
-                .write(Point.measurement(sensor.name)
-                        .time(observation.timestamp.epochSecond, TimeUnit.SECONDS)
-                        .addField("value", observation.value)
-                        .build())
+            .write(
+                Point.measurement(name)
+                    .time(observation.timestamp.epochSecond, TimeUnit.SECONDS)
+                    .addField("value", observation.value)
+                    .build()
+            )
     }
 
     /**
