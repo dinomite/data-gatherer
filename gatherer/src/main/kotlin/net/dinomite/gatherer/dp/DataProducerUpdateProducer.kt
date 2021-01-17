@@ -31,7 +31,7 @@ class DataProducerUpdateProducer(objectMapper: ObjectMapper, dataProducerUrls: L
                                     .orEmpty()
                                     .mapNotNull {
                                         // TODO within x update cycles
-                                        if (it.withinLast(Duration.ofMinutes(15))) {
+                                        if (it.hasObservationWithinLast(Duration.ofMinutes(15))) {
                                             it
                                         } else {
                                             logger.info("Discarding update for ${it.name} from ${it.observations.first().timestamp}")

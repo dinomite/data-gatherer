@@ -12,7 +12,7 @@ data class Sensor(
     constructor(group: Group, name: String, observation: Observation<*>) :
             this(group, name, EqualsCircularFifoQueue<Observation<*>>(10).apply { offer(observation) })
 
-    fun withinLast(duration: Duration): Boolean {
+    fun hasObservationWithinLast(duration: Duration): Boolean {
         return observations.isNotEmpty() && observations.first().timestamp.isAfter(Instant.now().minus(duration))
     }
 }

@@ -7,13 +7,17 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import net.dinomite.gatherer.model.Group.ENVIRONMENT
 import org.junit.jupiter.api.Test
+import java.time.Duration
+import java.time.Instant
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 internal class SensorTest {
     private val objectMapper = jacksonObjectMapper()
-            .registerModule(JavaTimeModule())
-            .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
-            .configure(SerializationFeature.INDENT_OUTPUT, true)
+        .registerModule(JavaTimeModule())
+        .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
+        .configure(SerializationFeature.INDENT_OUTPUT, true)
 
     private val intSensor = Sensor(ENVIRONMENT, "foo", Observation(7))
 
@@ -21,5 +25,18 @@ internal class SensorTest {
     fun roundtrip() {
         val json = objectMapper.writeValueAsString(intSensor)
         assertEquals(intSensor, objectMapper.readValue(json))
+    }
+
+    @Test
+    fun withinLast_RecentObservation() {
+        assertTrue { intSensor.hasObservationWithinLast(Duration.ofSeconds(10)) }
+    }
+
+    @Test
+    fun withinLast_OldObservation() {
+        assertFalse {
+            Sensor(ENVIRONMENT, "foo", Observation(7, Instant.now().minusSeconds(500)))
+                .hasObservationWithinLast(Duration.ofSeconds(300))
+        }
     }
 }
