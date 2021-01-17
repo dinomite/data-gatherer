@@ -24,5 +24,5 @@ dependencies {
 }
 
 application {
-    mainClassName = "net.dinomite.producer.Rtl433"
+    mainClass.set("net.dinomite.producer.Rtl433")
 }

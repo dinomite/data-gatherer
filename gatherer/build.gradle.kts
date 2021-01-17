@@ -36,7 +36,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "net.dinomite.gatherer.DataGathererKt"
+    mainClass.set("net.dinomite.gatherer.DataGathererKt")
 }
 
 tasks {
