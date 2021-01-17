@@ -3,19 +3,40 @@ package net.dinomite.gatherer.model
 import org.apache.commons.collections4.queue.CircularFifoQueue
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 internal class EqualsCircularFifoQueueTest {
     @Test
-    fun equals() {
+    fun equals_EqualObjects() {
         val first = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
         val second = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
         assertEquals(first, second)
     }
 
     @Test
-    fun hashcode() {
+    fun equals_Different() {
+        val first = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
+        val second = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(9) }
+        assertNotEquals(first, second)
+    }
+
+    @Test
+    fun hashcode_SameObject() {
+        val first = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
+        assertEquals(first.hashCode(), first.hashCode())
+    }
+
+    @Test
+    fun hashcode_EqualObjects() {
         val first = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
         val second = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
         assertEquals(first.hashCode(), second.hashCode())
+    }
+
+    @Test
+    fun hashcode_DifferentObjects() {
+        val first = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
+        val second = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(9) }
+        assertNotEquals(first.hashCode(), second.hashCode())
     }
 }

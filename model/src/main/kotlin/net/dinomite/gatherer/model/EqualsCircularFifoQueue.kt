@@ -21,6 +21,10 @@ class EqualsCircularFifoQueue<T>(private val queue: CircularFifoQueue<T>) : Queu
     }
 
     override fun hashCode(): Int {
-        return queue.hashCode()
+        val prime = 31
+        var result = 1
+        result = prime * result + queue.first().hashCode()
+        result = prime * result + queue.last().hashCode()
+        return result
     }
 }
