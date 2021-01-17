@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4.21"
     java
     id("com.github.ben-manes.versions") version "0.29.0"
     id("dev.jacomet.logging-capabilities") version "0.9.0"
@@ -35,6 +35,7 @@ subprojects {
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
+        implementation(kotlin("reflect"))
 
         testImplementation("org.junit.jupiter", "junit-jupiter-api", deps["jupiter"])
         testRuntimeOnly("org.junit.jupiter", "junit-jupiter-engine", deps["jupiter"])
@@ -42,7 +43,7 @@ subprojects {
     }
 
     tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "11"
+        kotlinOptions.jvmTarget = "13"
     }
 
     tasks.test {

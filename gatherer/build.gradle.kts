@@ -38,3 +38,7 @@ dependencies {
 application {
     mainClassName = "net.dinomite.gatherer.DataGathererKt"
 }
+
+tasks {
+    getByName<Zip>("distZip").enabled = false
+}
