@@ -19,7 +19,7 @@ jobs:
     - name: Set up JDK 11
       uses: actions/setup-java@v1
       with:
-        java-version: '13.0.5.1'
+        java-version: 'zulu13.35.51-ca-jdk13.0.5.1'
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
