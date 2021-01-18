@@ -6,12 +6,12 @@ import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import kotlinx.coroutines.runBlocking
-import net.dinomite.gatherer.createObjectMapper
 import net.dinomite.gatherer.model.EqualsCircularFifoQueue
 import net.dinomite.gatherer.model.Group.BATTERY
 import net.dinomite.gatherer.model.Group.ENVIRONMENT
 import net.dinomite.gatherer.model.Observation
 import net.dinomite.gatherer.model.Sensor
+import net.dinomite.gatherer.testObjectMapper
 import org.apache.commons.collections4.queue.CircularFifoQueue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -24,7 +24,7 @@ import kotlin.test.assertEquals
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class DataProducerClientTest {
     private val wireMock = WireMockServer(WireMockConfiguration.options().dynamicPort())
-    private val objectMapper = createObjectMapper()
+    private val objectMapper = testObjectMapper()
     private val dataProducerClient by lazy {
         DataProducerClient(objectMapper, "http://localhost:${wireMock.port()}")
     }

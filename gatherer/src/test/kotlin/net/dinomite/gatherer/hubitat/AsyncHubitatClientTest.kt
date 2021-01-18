@@ -6,8 +6,8 @@ import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import kotlinx.coroutines.runBlocking
-import net.dinomite.gatherer.createObjectMapper
 import net.dinomite.gatherer.hubitat.Device.Attribute.DataType.NUMBER
+import net.dinomite.gatherer.testObjectMapper
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,7 +18,7 @@ import kotlin.test.assertEquals
 internal class AsyncHubitatClientTest {
     private val wireMock = WireMockServer(WireMockConfiguration.options().dynamicPort())
     private val accessToken = "test-access-token"
-    private val objectMapper = createObjectMapper()
+    private val objectMapper = testObjectMapper()
     private val hubitatClient by lazy {
         AsyncHubitatClient("http://localhost:${wireMock.port()}", accessToken, objectMapper)
     }

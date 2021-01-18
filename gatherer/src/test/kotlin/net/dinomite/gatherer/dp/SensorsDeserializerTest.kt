@@ -1,10 +1,9 @@
-package net.dinomtie.gatherer.dp
+package net.dinomite.gatherer.dp
 
-import net.dinomite.gatherer.dp.SensorsDeserializer
 import net.dinomite.gatherer.model.Group.ENVIRONMENT
 import net.dinomite.gatherer.model.Observation
 import net.dinomite.gatherer.model.Sensor
-import net.dinomtie.gatherer.testObjectMapper
+import net.dinomite.gatherer.testObjectMapper
 import org.junit.jupiter.api.Test
 import java.time.Instant
 import kotlin.test.assertEquals

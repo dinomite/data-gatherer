@@ -1,4 +1,4 @@
-package net.dinomtie.gatherer.services
+package net.dinomite.gatherer.services
 
 import com.google.common.eventbus.AsyncEventBus
 import com.google.common.eventbus.Subscribe
@@ -6,8 +6,6 @@ import kotlinx.coroutines.runBlocking
 import net.dinomite.gatherer.model.Group
 import net.dinomite.gatherer.model.Observation
 import net.dinomite.gatherer.model.Sensor
-import net.dinomite.gatherer.services.EventBusScheduledService
-import net.dinomite.gatherer.services.UpdateProducer
 import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.time.Instant

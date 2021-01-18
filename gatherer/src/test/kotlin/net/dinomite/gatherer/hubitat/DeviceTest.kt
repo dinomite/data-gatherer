@@ -3,7 +3,7 @@ package net.dinomite.gatherer.hubitat
 import com.fasterxml.jackson.module.kotlin.readValue
 import net.dinomite.gatherer.hubitat.Device.Attribute
 import net.dinomite.gatherer.hubitat.Device.Attribute.DataType.*
-import net.dinomtie.gatherer.testObjectMapper
+import net.dinomite.gatherer.testObjectMapper
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

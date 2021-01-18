@@ -71,7 +71,7 @@ fun main(args: Array<String>) {
     serviceManager.awaitStopped()
 }
 
-fun createObjectMapper() = jacksonObjectMapper()
+fun createObjectMapper(): ObjectMapper = jacksonObjectMapper()
     .registerModule(JavaTimeModule())
     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
