@@ -21,10 +21,11 @@ import java.time.temporal.ChronoUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+private val objectMapper = testObjectMapper()
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class DataProducerClientTest {
     private val wireMock = WireMockServer(WireMockConfiguration.options().dynamicPort())
-    private val objectMapper = testObjectMapper()
     private val dataProducerClient by lazy {
         DataProducerClient(objectMapper, "http://localhost:${wireMock.port()}")
     }
@@ -81,5 +82,54 @@ internal class DataProducerClientTest {
         assertEquals(expected[0], actual[0])
         assertEquals(expected[1], actual[1])
         assertEquals(expected[2], actual[2])
+    }
+}
+
+internal class SensorsDeserializerTest {
+    private val sensorsDeserializer = SensorsDeserializer(testObjectMapper())
+
+    @Test
+    fun deserialize() {
+        val timestamp = Instant.parse("2020-08-30T14:30:00Z")
+        val expected = listOf(
+            Sensor(ENVIRONMENT, "Acurite-Tower-12090-temperature", Observation(73.75, timestamp)),
+            Sensor(ENVIRONMENT, "Acurite-Tower-12090-humidity", Observation(54, timestamp)),
+            Sensor(ENVIRONMENT, "OS-Oregon-THN132N-25-temperature", Observation(91.4, timestamp))
+        )
+
+        val json = """[
+                {
+                    "group": "ENVIRONMENT",
+                    "name": "Acurite-Tower-12090-temperature",
+                    "observations": [
+                        {
+                            "value": 73.75,
+                            "timestamp": "2020-08-30T14:30:00Z"
+                        }
+                    ]
+                },
+                {
+                    "group": "ENVIRONMENT",
+                    "name": "Acurite-Tower-12090-humidity",
+                    "observations": [
+                        {
+                            "value": 54,
+                            "timestamp": "2020-08-30T14:30:00Z"
+                        }
+                    ]
+                },
+                {
+                    "group": "ENVIRONMENT",
+                    "name": "OS-Oregon-THN132N-25-temperature",
+                    "observations": [
+                        {
+                            "value": 91.4,
+                            "timestamp": "2020-08-30T14:30:00Z"
+                        }
+                    ]
+                }
+        ]"""
+
+        assertEquals(expected, sensorsDeserializer.deserialize(json))
     }
 }

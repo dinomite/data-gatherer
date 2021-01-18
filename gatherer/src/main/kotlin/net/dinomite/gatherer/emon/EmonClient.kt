@@ -17,28 +17,32 @@ interface EmonClient {
 /**
  * HTTP client that sends information to EmonCMS
  */
-class HttpEmonClient
-@Inject constructor(private val objectMapper: ObjectMapper,
-                    config: DataGathererConfig) : EmonClient {
+class HttpEmonClient(
+    private val objectMapper: ObjectMapper,
+    private val baseUrl: String,
+    private val apiKey: String
+) : EmonClient {
+    @Inject
+    constructor(objectMapper: ObjectMapper, config: DataGathererConfig) :
+            this(objectMapper, with(config) { "$emonScheme://$emonHost/$emonInputBasePath" }, config.emonApiKey)
+
     private val emonUpdateResponseDeserializer = EmonUpdateResponseDeserializer(objectMapper)
-    private val baseUrl = with(config) { "$emonScheme://$emonHost/$emonInputBasePath" }
-    private val apiKey = config.emonApiKey
 
     override suspend fun sendUpdate(update: EmonUpdate) {
         val body = mapOf(
-                "apikey" to apiKey,
-                "node" to update.node,
-                "fulljson" to withContext(IO) { objectMapper.writeValueAsString(update.updates) }
+            "apikey" to apiKey,
+            "node" to update.node,
+            "fulljson" to withContext(IO) { objectMapper.writeValueAsString(update.updates) }
         ).toList()
         val (request, _, result) = Fuel.get(baseUrl, body)
-                .awaitObjectResponseResult(emonUpdateResponseDeserializer)
+            .awaitObjectResponseResult(emonUpdateResponseDeserializer)
         result.fold(
-                { emonUpdateResponse ->
-                    if (!emonUpdateResponse.success) {
-                        logger.warn("Failed to send update: ${emonUpdateResponse.message}")
-                    }
-                },
-                { error -> logger.warn("Request to ${request.url} got error ${error.exception}: ${error.message}") }
+            { emonUpdateResponse ->
+                if (!emonUpdateResponse.success) {
+                    logger.warn("Failed to send update: ${emonUpdateResponse.message}")
+                }
+            },
+            { error -> logger.warn("Request to ${request.url} got error ${error.exception}: ${error.message}") }
         )
     }
 
@@ -47,7 +51,8 @@ class HttpEmonClient
     }
 }
 
-class EmonUpdateResponseDeserializer(private val objectMapper: ObjectMapper) : ResponseDeserializable<EmonUpdateResponse> {
+class EmonUpdateResponseDeserializer(private val objectMapper: ObjectMapper) :
+    ResponseDeserializable<EmonUpdateResponse> {
     override fun deserialize(content: String): EmonUpdateResponse =
-            objectMapper.readValue(content, EmonUpdateResponse::class.java)
+        objectMapper.readValue(content, EmonUpdateResponse::class.java)
 }
