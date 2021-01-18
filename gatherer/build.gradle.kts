@@ -11,7 +11,7 @@ dependencies {
     runtimeOnly("commons-beanutils", "commons-beanutils", "1.9.4")
     implementation(project(":model"))
 
-    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.3.3")
+    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.4.2")
 
     implementation("ch.qos.logback", "logback-classic", "1.2.3")
 
@@ -19,7 +19,7 @@ dependencies {
     implementation("com.github.kittinunf.fuel", "fuel-coroutines", deps["fuel"])
     implementation("com.github.kittinunf.fuel", "fuel-jackson", deps["fuel"])
 
-    implementation("com.google.guava", "guava", "29.0-jre")
+    implementation("com.google.guava", "guava", "30.1-jre")
 
     implementation("org.mpierce.guice.warmup", "guice-warmup", "0.1")
     implementation("com.google.inject", "guice", "4.2.3")
@@ -30,9 +30,9 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype", "jackson-datatype-jsr310", deps["jackson"])
     implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", deps["jackson"])
 
-    implementation("org.influxdb", "influxdb-java", "2.20")
+    implementation("org.influxdb", "influxdb-java", "2.21")
 
-    testImplementation("com.github.tomakehurst", "wiremock", "2.27.1")
+    testImplementation("com.github.tomakehurst", "wiremock", "2.27.2")
 }
 
 application {

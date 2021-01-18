@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.4.21"
     java
-    id("com.github.ben-manes.versions") version "0.29.0"
+    id("com.github.ben-manes.versions") version "0.36.0"
     id("dev.jacomet.logging-capabilities") version "0.9.0"
     jacoco
 }
@@ -27,9 +27,9 @@ subprojects {
 
     val deps by extra {
         mapOf(
-                "fuel" to "2.2.3",
-                "jackson" to "2.11.2",
-                "jupiter" to "5.6.2"
+                "fuel" to "2.3.1",
+                "jackson" to "2.12.1",
+                "jupiter" to "5.7.0"
         )
     }
 
