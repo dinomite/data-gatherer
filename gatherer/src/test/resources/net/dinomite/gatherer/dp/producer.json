@@ -1,0 +1,40 @@
+[
+  {
+    "group": "ENVIRONMENT",
+    "name": "Acurite-Tower-11028-temperature",
+    "observations": [
+      {
+        "value": 74.84,
+        "timestamp": 1610916410.822617
+      },
+      {
+        "value": 74.84,
+        "timestamp": 1610916410.824274
+      },
+      {
+        "value": 74.84,
+        "timestamp": 1610916427.599074
+      }
+    ]
+  },
+  {
+    "group": "ENVIRONMENT",
+    "name": "Acurite-Tower-11028-humidity",
+    "observations": [
+      {
+        "value": 36,
+        "timestamp": 1610916410.822617
+      }
+    ]
+  },
+  {
+    "group": "BATTERY",
+    "name": "Acurite-Tower-11028-battery",
+    "observations": [
+      {
+        "value": 1,
+        "timestamp": 1610916410.822617
+      }
+    ]
+  }
+]

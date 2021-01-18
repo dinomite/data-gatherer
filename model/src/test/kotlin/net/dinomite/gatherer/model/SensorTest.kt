@@ -6,9 +6,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import net.dinomite.gatherer.model.Group.ENVIRONMENT
-import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.time.Instant
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -20,6 +20,12 @@ internal class SensorTest {
         .configure(SerializationFeature.INDENT_OUTPUT, true)
 
     private val intSensor = Sensor(ENVIRONMENT, "foo", Observation(7))
+
+    @Test
+    fun equals() {
+        val now = Instant.now()
+        assertEquals(Sensor(ENVIRONMENT, "foo", Observation(7, now)), Sensor(ENVIRONMENT, "foo", Observation(7, now)))
+    }
 
     @Test
     fun roundtrip() {

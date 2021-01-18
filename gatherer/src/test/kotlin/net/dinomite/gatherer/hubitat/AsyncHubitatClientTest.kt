@@ -1,11 +1,12 @@
 package net.dinomite.gatherer.hubitat
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import kotlinx.coroutines.runBlocking
+import net.dinomite.gatherer.createObjectMapper
 import net.dinomite.gatherer.hubitat.Device.Attribute.DataType.NUMBER
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -15,12 +16,9 @@ import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class AsyncHubitatClientTest {
-    private val wireMock = WireMockServer()
+    private val wireMock = WireMockServer(WireMockConfiguration.options().dynamicPort())
     private val accessToken = "test-access-token"
-    private val objectMapper = jacksonObjectMapper().apply {
-        registerModule(JavaTimeModule())
-        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    }
+    private val objectMapper = createObjectMapper()
     private val hubitatClient by lazy {
         AsyncHubitatClient("http://localhost:${wireMock.port()}", accessToken, objectMapper)
     }
@@ -44,14 +42,14 @@ internal class AsyncHubitatClientTest {
             |"attributes": [{"name": "power", "currentValue": 7, "dataType": "NUMBER"}]
             |}""".trimMargin()
 
-        stubFor(
-                get(urlEqualTo("/$deviceId?access_token=$accessToken"))
-                        .willReturn(
-                                aResponse()
-                                        .withStatus(200)
-                                        .withHeader("Content-Type", "application/json")
-                                        .withBody(deviceJson)
-                        )
+        wireMock.stubFor(
+            get(urlEqualTo("/$deviceId?access_token=$accessToken"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(deviceJson)
+                )
         )
 
         val actual = hubitatClient.retrieveDevice("$deviceId")
