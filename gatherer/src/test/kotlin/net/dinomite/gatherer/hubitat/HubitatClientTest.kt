@@ -15,7 +15,7 @@ import org.junit.jupiter.api.TestInstance
 import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-internal class AsyncHubitatClientTest {
+internal class HubitatClientTest {
     private val wireMock = WireMockServer(WireMockConfiguration.options().dynamicPort())
     private val accessToken = "test-access-token"
     private val objectMapper = testObjectMapper()
