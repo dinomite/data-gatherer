@@ -32,7 +32,6 @@ dependencies {
 
     implementation("org.influxdb", "influxdb-java", "2.21")
 
-    testImplementation("com.nhaarman.mockitokotlin2", "mockito-kotlin", "2.2.0")
     testImplementation("com.github.tomakehurst", "wiremock", "2.27.2")
 }
 

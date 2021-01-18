@@ -1,16 +1,19 @@
 package net.dinomite.gatherer.emon
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.runBlocking
-import net.dinomite.gatherer.model.Group
 import net.dinomite.gatherer.model.Group.ENVIRONMENT
 import net.dinomite.gatherer.model.Observation
 import net.dinomite.gatherer.model.Sensor
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 internal class EmonReporterTest {
-    private val emonClient: EmonClient = mock()
+    private lateinit var receivedUpdate: EmonUpdate
+    private val emonClient: EmonClient = object : EmonClient {
+        override suspend fun sendUpdate(update: EmonUpdate) {
+            receivedUpdate = update
+        }
+    }
     private val emonReporter = EmonReporter(emonClient)
 
     @Test
@@ -19,9 +22,12 @@ internal class EmonReporterTest {
 
         emonReporter.sendSensorDataToEmon(sensor)
 
-        verify(emonClient).sendUpdate(EmonUpdate(
-            sensor.group.reportingValue(),
-            mapOf(sensor.name to "${sensor.observations.first().value}")
-        ))
+        assertEquals(
+            EmonUpdate(
+                sensor.group.reportingValue(),
+                mapOf(sensor.name to "${sensor.observations.first().value}")
+            ),
+            receivedUpdate
+        )
     }
 }
