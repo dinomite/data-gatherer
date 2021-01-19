@@ -9,6 +9,6 @@ dependencies {
     testImplementation("com.fasterxml.jackson.datatype", "jackson-datatype-jsr310", deps["jackson"])
     testImplementation("com.fasterxml.jackson.module", "jackson-module-kotlin", deps["jackson"])
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
     testImplementation(kotlin("test-junit5"))
 }
