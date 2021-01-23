@@ -6,13 +6,13 @@ import net.dinomite.gatherer.hubitat.DeviceType.POWER
 import net.dinomite.gatherer.model.Group.ENERGY
 import net.dinomite.gatherer.model.Observation
 import net.dinomite.gatherer.model.Sensor
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class HubitatUpdateProducerTest {
     private val id = 13
     private val hubitatClient = object : HubitatClient {
-        override suspend fun retrieveDevice(deviceId: String): Device? {
+        override suspend fun retrieveDevice(deviceId: String): Device {
             return Device(id, "Foodevice", listOf(Device.Attribute("power", "9", NUMBER)))
         }
     }

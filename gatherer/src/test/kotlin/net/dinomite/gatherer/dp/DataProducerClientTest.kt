@@ -27,7 +27,7 @@ private val objectMapper = testObjectMapper()
 internal class DataProducerClientTest {
     private val wireMock = WireMockServer(WireMockConfiguration.options().dynamicPort())
     private val dataProducerClient by lazy {
-        DataProducerClient(objectMapper, "http://localhost:${wireMock.port()}")
+        AsyncDataProducerClient(objectMapper, "http://localhost:${wireMock.port()}")
     }
 
     private val json = javaClass.getResource("/net/dinomite/gatherer/dp/producer.json").readText()

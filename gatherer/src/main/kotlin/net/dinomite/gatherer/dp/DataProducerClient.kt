@@ -8,10 +8,14 @@ import com.github.kittinunf.fuel.coroutines.awaitObjectResponseResult
 import net.dinomite.gatherer.model.Sensor
 import org.slf4j.LoggerFactory
 
-class DataProducerClient(objectMapper: ObjectMapper, private val url: String) {
+interface DataProducerClient {
+    suspend fun retrieveData(): List<Sensor>?
+}
+
+class AsyncDataProducerClient(objectMapper: ObjectMapper, private val url: String) : DataProducerClient {
     private val deviceDeserializer = SensorsDeserializer(objectMapper)
 
-    suspend fun retrieveData(): List<Sensor>? {
+    override suspend fun retrieveData(): List<Sensor>? {
         val (request, _, result) = Fuel.get(url)
                 .awaitObjectResponseResult(deviceDeserializer)
         return result.fold(
@@ -24,7 +28,7 @@ class DataProducerClient(objectMapper: ObjectMapper, private val url: String) {
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(DataProducerClient::class.java.name)
+        private val logger = LoggerFactory.getLogger(AsyncDataProducerClient::class.java.name)
     }
 }
 

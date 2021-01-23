@@ -4,7 +4,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import net.dinomite.gatherer.hubitat.Device.Attribute
 import net.dinomite.gatherer.hubitat.Device.Attribute.DataType.*
 import net.dinomite.gatherer.testObjectMapper
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class DeviceTest {

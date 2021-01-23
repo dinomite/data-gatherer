@@ -1,6 +1,5 @@
 package net.dinomite.gatherer.dp
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -12,37 +11,31 @@ import java.time.Duration
 
 /**
  * Pulls information from Data Producer and packages it into EmonUpdates
- *
- * Data Producer format:
- *      [
- *          { <Sensor> },
- *          ...
- *      [
  */
-class DataProducerUpdateProducer(objectMapper: ObjectMapper, dataProducerUrls: List<String>) : UpdateProducer {
-    private val clients = dataProducerUrls.map { DataProducerClient(objectMapper, it) }
-
+class DataProducerUpdateProducer(private val clients: List<DataProducerClient>) : UpdateProducer {
     override suspend fun sensors(): List<Sensor> {
         return clients
-                .map { client ->
-                    withContext(Dispatchers.IO) {
-                        async {
-                            client.retrieveData()
-                                    .orEmpty()
-                                    .mapNotNull {
-                                        // TODO within x update cycles
-                                        if (it.hasObservationWithinLast(Duration.ofMinutes(15))) {
-                                            it
-                                        } else {
-                                            logger.info("Discarding update for ${it.name} from ${it.observations.first().timestamp}")
-                                            null
-                                        }
-                                    }
-                        }
-                    }
+            .map { client ->
+                withContext(Dispatchers.IO) {
+                    async { client.transmogrify() }
                 }
-                .awaitAll()
-                .flatten()
+            }
+            .awaitAll()
+            .flatten()
+    }
+
+    suspend fun DataProducerClient.transmogrify(): List<Sensor> {
+        return retrieveData()
+            .orEmpty()
+            .mapNotNull {
+                // TODO within x update cycles
+                if (it.hasObservationWithinLast(Duration.ofMinutes(15))) {
+                    it
+                } else {
+                    logger.info("Discarding update for ${it.name} from ${it.observations.first().timestamp}")
+                    null
+                }
+            }
     }
 
     companion object {

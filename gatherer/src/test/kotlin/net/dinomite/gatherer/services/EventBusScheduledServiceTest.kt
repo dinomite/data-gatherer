@@ -6,7 +6,7 @@ import kotlinx.coroutines.runBlocking
 import net.dinomite.gatherer.model.Group
 import net.dinomite.gatherer.model.Observation
 import net.dinomite.gatherer.model.Sensor
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.ArrayBlockingQueue
