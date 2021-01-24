@@ -2,6 +2,7 @@ package net.dinomite.gatherer.hubitat
 
 import kotlinx.coroutines.runBlocking
 import net.dinomite.gatherer.hubitat.Device.Attribute.DataType.NUMBER
+import net.dinomite.gatherer.hubitat.DeviceType.ENVIRONMENT
 import net.dinomite.gatherer.hubitat.DeviceType.POWER
 import net.dinomite.gatherer.model.Group.ENERGY
 import net.dinomite.gatherer.model.Observation
@@ -33,10 +34,30 @@ internal class HubitatUpdateProducerTest {
     }
 
     @Test
+    fun sensorValues_UnsupportedType() {
+        val hubitatUpdateProducer = HubitatUpdateProducer(
+            mapOf("$deviceId" to ENVIRONMENT),
+            hubitatClient(Device(deviceId, "Foodevice", listOf(Device.Attribute("power", "9", NUMBER))))
+        )
+        val actual = runBlocking { hubitatUpdateProducer.sensors() }
+        assertEquals(0, actual.size)
+    }
+
+    @Test
     fun sensorValues_NullDevice() {
         val hubitatUpdateProducer = HubitatUpdateProducer(
             mapOf("$deviceId" to POWER),
             hubitatClient(null)
+        )
+        val actual = runBlocking { hubitatUpdateProducer.sensors() }
+        assertEquals(0, actual.size)
+    }
+
+    @Test
+    fun sensorValues_NullPowerAmount() {
+        val hubitatUpdateProducer = HubitatUpdateProducer(
+            mapOf("$deviceId" to POWER),
+            hubitatClient(Device(deviceId, "Foodevice", listOf(Device.Attribute("power", null, NUMBER))))
         )
         val actual = runBlocking { hubitatUpdateProducer.sensors() }
         assertEquals(0, actual.size)
