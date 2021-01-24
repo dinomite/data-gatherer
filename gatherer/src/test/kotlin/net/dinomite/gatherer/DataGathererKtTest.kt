@@ -1,16 +1,19 @@
 package net.dinomite.gatherer
 
-import org.apache.commons.configuration2.CompositeConfiguration
-import org.apache.commons.configuration2.MapConfiguration
+import io.mockk.mockk
 import kotlin.test.Test
+import kotlin.test.assertNotNull
 
 internal class DataGathererKtTest {
     private val objectMapper = testObjectMapper()
 
     @Test
-    fun foo() {
-        val configMap = mapOf<String, String>()
-        val config = DataGathererConfig(CompositeConfiguration(MapConfiguration(configMap)))
-        setupGuice(objectMapper, config)
+    fun canCreateInjector() {
+        val config = mockk<DataGathererConfig>(relaxed = true)
+
+        val injector = setupGuice(objectMapper, config)
+
+        // Verifies that wiring satisfies explicit bindings
+        assertNotNull(injector)
     }
 }

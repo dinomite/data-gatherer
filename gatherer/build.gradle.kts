@@ -33,6 +33,7 @@ dependencies {
     implementation("org.influxdb", "influxdb-java", "2.21")
 
     testImplementation("com.github.tomakehurst", "wiremock", "2.27.2")
+    testImplementation("io.mockk", "mockk", "1.10.5")
 }
 
 application {
