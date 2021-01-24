@@ -58,6 +58,21 @@ internal class ConfigurationKtTest {
         assertEquals("foobar", config.someThing)
     }
 
+    @Test
+    fun buildConfiguration_ConfigurationsStackInOrder() {
+        val path = createTempDirectory("config-test")
+        File(path.toString(), "01-config.properties").apply {
+            writeText("SOME_STRING=foobar\n")
+        }
+        File(path.toString(), "02-config.properties").apply {
+            writeText("SOME_STRING=overridden\n")
+        }
+
+        val config = buildConfiguration(listOf(path.toString()).toTypedArray(), usage) { TestConfig(it) }
+
+        assertEquals("overridden", config.someThing)
+    }
+
     class TestConfig(config: CompositeConfiguration) {
         val someThing: String? = config.getString("SOME_STRING")
     }
