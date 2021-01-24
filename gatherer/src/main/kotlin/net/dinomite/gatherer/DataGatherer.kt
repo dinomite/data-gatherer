@@ -76,7 +76,7 @@ fun createObjectMapper(): ObjectMapper = jacksonObjectMapper()
     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
 
-private fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): Injector {
+fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): Injector {
     return Guice.createInjector(
         Stage.PRODUCTION,
         object : AbstractModule() {
