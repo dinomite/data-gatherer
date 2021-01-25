@@ -7,6 +7,12 @@ import kotlin.test.assertNotEquals
 
 internal class EqualsCircularFifoQueueTest {
     @Test
+    fun equals_SameObject() {
+        val queue = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
+        assertEquals(queue, queue)
+    }
+
+    @Test
     fun equals_EqualObjects() {
         val first = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
         val second = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
@@ -14,7 +20,14 @@ internal class EqualsCircularFifoQueueTest {
     }
 
     @Test
-    fun equals_Different() {
+    fun equals_DifferentSize() {
+        val first = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7); add(3) }
+        val second = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(9) }
+        assertNotEquals(first, second)
+    }
+
+    @Test
+    fun equals_DifferentContents() {
         val first = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
         val second = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(9) }
         assertNotEquals(first, second)
