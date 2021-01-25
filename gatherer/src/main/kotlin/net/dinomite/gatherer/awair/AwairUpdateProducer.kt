@@ -24,7 +24,7 @@ class AwairUpdateProducer(private val devices: List<String>,
                         logger.warn("Dropping update for $deviceId because it is null")
                         null
                     } else {
-                        Sensor.Comp.values().map { comp ->
+                        AwairSensor.Comp.values().map { comp ->
                             val value = device.sensorValue(comp)
                             if (value == null) {
                                 logger.warn("${comp.name} value for <$deviceId> is null")
@@ -45,7 +45,7 @@ class AwairUpdateProducer(private val devices: List<String>,
                 .filterNotNull()
     }
 
-    private suspend fun retrieveDevices(): Map<String, Device?> = withContext(Dispatchers.IO) {
+    private suspend fun retrieveDevices(): Map<String, AwairDevice?> = withContext(Dispatchers.IO) {
         devices.map { deviceId -> async { deviceId to awairClient.retrieveDevice(deviceId) } }
                 .awaitAll()
                 .toMap()

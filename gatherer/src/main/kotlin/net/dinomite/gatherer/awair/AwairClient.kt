@@ -20,7 +20,7 @@ class AwairClient
     private val baseUrl = with(config) { "$awairScheme://$awairHost/$awairDeviceBasePath" }
     private val accessToken = config.awairAccessToken
 
-    suspend fun retrieveDevice(deviceId: String): Device? {
+    suspend fun retrieveDevice(deviceId: String): AwairDevice? {
         val (request, _, result) = Fuel.get(deviceUrl(deviceId))
                 .header(Headers.AUTHORIZATION, "Bearer $accessToken")
                 .awaitObjectResponseResult(deviceDeserializer)
@@ -40,6 +40,6 @@ class AwairClient
     }
 }
 
-class DeviceDeserializer(private val objectMapper: ObjectMapper) : ResponseDeserializable<Device> {
-    override fun deserialize(content: String): Device = objectMapper.readValue(content, Device::class.java)
+class DeviceDeserializer(private val objectMapper: ObjectMapper) : ResponseDeserializable<AwairDevice> {
+    override fun deserialize(content: String): AwairDevice = objectMapper.readValue(content, AwairDevice::class.java)
 }
