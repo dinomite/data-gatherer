@@ -13,4 +13,9 @@ internal class GroupTest {
     fun fromString_MixedCase() {
         assertEquals(Group.DEVICE, Group.fromString("Device"))
     }
+
+    @Test
+    fun reportingValue() {
+        assertEquals("environment", Group.ENVIRONMENT.reportingValue())
+    }
 }

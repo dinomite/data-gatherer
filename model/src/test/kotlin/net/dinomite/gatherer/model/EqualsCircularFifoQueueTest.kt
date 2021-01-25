@@ -28,15 +28,15 @@ internal class EqualsCircularFifoQueueTest {
 
     @Test
     fun hashcode_EqualObjects() {
-        val first = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
-        val second = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
+        val first = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7); add(10) }
+        val second = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7); add(10) }
         assertEquals(first.hashCode(), second.hashCode())
     }
 
     @Test
     fun hashcode_DifferentObjects() {
-        val first = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7) }
-        val second = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(9) }
+        val first = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(7); add(3) }
+        val second = EqualsCircularFifoQueue<Int>(CircularFifoQueue(10)).apply { add(9); add(1) }
         assertNotEquals(first.hashCode(), second.hashCode())
     }
 }
