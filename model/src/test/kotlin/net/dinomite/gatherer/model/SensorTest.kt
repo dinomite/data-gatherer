@@ -34,6 +34,14 @@ internal class SensorTest {
     }
 
     @Test
+    fun withinLast_NoObservations() {
+        assertFalse {
+            Sensor(ENVIRONMENT, "foo", EqualsCircularFifoQueue(10))
+                .hasObservationWithinLast(Duration.ofSeconds(300))
+        }
+    }
+
+    @Test
     fun withinLast_RecentObservation() {
         assertTrue { intSensor.hasObservationWithinLast(Duration.ofSeconds(10)) }
     }
