@@ -34,6 +34,11 @@ dependencies {
 
     testImplementation("com.github.tomakehurst", "wiremock", "2.27.2")
     testImplementation("io.mockk", "mockk", "1.10.5")
+    testImplementation("io.apisense.embed.influx", "embed-influxDB",  "1.2.1")
+    {
+        exclude("org.slf4j", "slf4j-log4j12")
+    }
+    testImplementation("org.slf4j", "log4j-over-slf4j", "1.7.30")
 }
 
 application {
