@@ -41,7 +41,6 @@ internal class InfluxDbReporterTest {
         var tries = 0
         var ping: Pong? = null
         while (ping?.isGood == null && tries < 10) {
-            val influxDb = influxDb
             try {
                 ping = influxDb.ping()
             } catch (e: Exception) {
