@@ -48,3 +48,9 @@ application {
 tasks {
     getByName<Zip>("distZip").enabled = false
 }
+
+tasks.test {
+    if (project.hasProperty("excludeTests")) {
+        exclude(project.property("excludeTests").toString())
+    }
+}
