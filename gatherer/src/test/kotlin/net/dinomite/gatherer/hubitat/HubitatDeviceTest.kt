@@ -1,18 +1,18 @@
 package net.dinomite.gatherer.hubitat
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import net.dinomite.gatherer.hubitat.Device.Attribute
-import net.dinomite.gatherer.hubitat.Device.Attribute.DataType.*
+import net.dinomite.gatherer.hubitat.HubitatDevice.Attribute
+import net.dinomite.gatherer.hubitat.HubitatDevice.Attribute.DataType.*
 import net.dinomite.gatherer.testObjectMapper
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-internal class DeviceTest {
+internal class HubitatDeviceTest {
     private val deviceJson = javaClass.getResource("/net/dinomite/gatherer/hubitat/device.json").readText()
 
     @Test
     fun deserialize() {
-        val expected = Device(13, "Porch switch", listOf(
+        val expected = HubitatDevice(13, "Porch switch", listOf(
                 Attribute("energy", "14.196", NUMBER),
                 Attribute("firmware", null, STRING),
                 Attribute("groups", null, NUMBER),

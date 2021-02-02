@@ -6,7 +6,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import kotlinx.coroutines.runBlocking
-import net.dinomite.gatherer.hubitat.Device.Attribute.DataType.NUMBER
+import net.dinomite.gatherer.hubitat.HubitatDevice.Attribute.DataType.NUMBER
 import net.dinomite.gatherer.testObjectMapper
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -54,7 +54,7 @@ internal class HubitatClientTest {
 
         val actual = hubitatClient.retrieveDevice("$deviceId")
 
-        val expected = Device(deviceId, "foo", listOf(Device.Attribute("power", "7", NUMBER)))
+        val expected = HubitatDevice(deviceId, "foo", listOf(HubitatDevice.Attribute("power", "7", NUMBER)))
         assertEquals(expected, actual)
     }
 }

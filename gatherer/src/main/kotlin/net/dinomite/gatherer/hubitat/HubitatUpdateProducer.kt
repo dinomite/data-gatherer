@@ -4,7 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
-import net.dinomite.gatherer.hubitat.DeviceType.POWER
+import net.dinomite.gatherer.hubitat.HubitatDeviceType.POWER
 import net.dinomite.gatherer.model.Group.ENERGY
 import net.dinomite.gatherer.model.Observation
 import net.dinomite.gatherer.model.Sensor
@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 /**
  * Pulls information from Hubitat devices and packages it into EmonUpdates
  */
-class HubitatUpdateProducer(private val devices: Map<String, DeviceType>,
+class HubitatUpdateProducer(private val devices: Map<String, HubitatDeviceType>,
                             private val hubitatClient: HubitatClient) : UpdateProducer {
     /**
      * Retrieve information for each device ID from Hubitat
@@ -38,7 +38,7 @@ class HubitatUpdateProducer(private val devices: Map<String, DeviceType>,
                 }
     }
 
-    private fun powerDevice(device: Device): Sensor? {
+    private fun powerDevice(device: HubitatDevice): Sensor? {
         val power = device.attribute("power").Value()
         return if (power == null) {
             logger.warn("Power value for <${device.identity()}> is null")
@@ -49,7 +49,7 @@ class HubitatUpdateProducer(private val devices: Map<String, DeviceType>,
         }
     }
 
-    private suspend fun retrieveDevices(): List<Triple<String, DeviceType, Device?>> = withContext(Dispatchers.IO) {
+    private suspend fun retrieveDevices(): List<Triple<String, HubitatDeviceType, HubitatDevice?>> = withContext(Dispatchers.IO) {
         devices.map { (deviceId, type) -> async { Triple(deviceId, type, hubitatClient.retrieveDevice(deviceId)) } }
                 .awaitAll()
     }

@@ -1,9 +1,9 @@
 package net.dinomite.gatherer.hubitat
 
-import net.dinomite.gatherer.hubitat.Device.Attribute.DataType.NUMBER
+import net.dinomite.gatherer.hubitat.HubitatDevice.Attribute.DataType.NUMBER
 import net.dinomite.gatherer.model.Group
 
-data class Device(val id: Int, val name: String, val attributes: List<Attribute>) {
+data class HubitatDevice(val id: Int, val name: String, val attributes: List<Attribute>) {
     val reportingName by lazy { name.replace(' ', '_').toLowerCase() }
 
     fun attribute(name: String) = attributes.first { it.name == name }
@@ -30,7 +30,7 @@ data class Device(val id: Int, val name: String, val attributes: List<Attribute>
     }
 }
 
-enum class DeviceType(val node: String) {
+enum class HubitatDeviceType(private val node: String) {
     POWER("energy"),
     ENVIRONMENT("environment");
 

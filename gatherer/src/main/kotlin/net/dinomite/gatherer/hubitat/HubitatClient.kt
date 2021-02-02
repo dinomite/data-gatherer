@@ -7,7 +7,7 @@ import com.github.kittinunf.fuel.coroutines.awaitObjectResponseResult
 import org.slf4j.LoggerFactory
 
 interface HubitatClient {
-    suspend fun retrieveDevice(deviceId: String): Device?
+    suspend fun retrieveDevice(deviceId: String): HubitatDevice?
 }
 
 class AsyncHubitatClient(
@@ -17,7 +17,7 @@ class AsyncHubitatClient(
 ) : HubitatClient {
     private val deviceDeserializer = DeviceDeserializer(objectMapper)
 
-    override suspend fun retrieveDevice(deviceId: String): Device? {
+    override suspend fun retrieveDevice(deviceId: String): HubitatDevice? {
         val (request, _, result) = Fuel.get(deviceUrl(deviceId))
                 .awaitObjectResponseResult(deviceDeserializer)
         return result.fold(
@@ -36,6 +36,6 @@ class AsyncHubitatClient(
     }
 }
 
-class DeviceDeserializer(private val objectMapper: ObjectMapper) : ResponseDeserializable<Device> {
-    override fun deserialize(content: String): Device = objectMapper.readValue(content, Device::class.java)
+class DeviceDeserializer(private val objectMapper: ObjectMapper) : ResponseDeserializable<HubitatDevice> {
+    override fun deserialize(content: String): HubitatDevice = objectMapper.readValue(content, HubitatDevice::class.java)
 }

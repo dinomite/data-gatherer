@@ -1,9 +1,9 @@
 package net.dinomite.gatherer.hubitat
 
 import kotlinx.coroutines.runBlocking
-import net.dinomite.gatherer.hubitat.Device.Attribute.DataType.NUMBER
-import net.dinomite.gatherer.hubitat.DeviceType.ENVIRONMENT
-import net.dinomite.gatherer.hubitat.DeviceType.POWER
+import net.dinomite.gatherer.hubitat.HubitatDevice.Attribute.DataType.NUMBER
+import net.dinomite.gatherer.hubitat.HubitatDeviceType.ENVIRONMENT
+import net.dinomite.gatherer.hubitat.HubitatDeviceType.POWER
 import net.dinomite.gatherer.model.Group.ENERGY
 import net.dinomite.gatherer.model.Observation
 import net.dinomite.gatherer.model.Sensor
@@ -13,7 +13,7 @@ import kotlin.test.assertEquals
 internal class HubitatUpdateProducerTest {
     private val deviceId = 13
 
-    private fun hubitatClient(device: Device?) = object : HubitatClient {
+    private fun hubitatClient(device: HubitatDevice?) = object : HubitatClient {
         override suspend fun retrieveDevice(deviceId: String) = device
     }
 
@@ -21,7 +21,7 @@ internal class HubitatUpdateProducerTest {
     fun sensorValues() {
         val hubitatUpdateProducer = HubitatUpdateProducer(
             mapOf("$deviceId" to POWER),
-            hubitatClient(Device(deviceId, "Foodevice", listOf(Device.Attribute("power", "9", NUMBER))))
+            hubitatClient(HubitatDevice(deviceId, "Foodevice", listOf(HubitatDevice.Attribute("power", "9", NUMBER))))
         )
         val actual = runBlocking { hubitatUpdateProducer.sensors() }
         assertEquals(1, actual.size)
@@ -37,7 +37,7 @@ internal class HubitatUpdateProducerTest {
     fun sensorValues_UnsupportedType() {
         val hubitatUpdateProducer = HubitatUpdateProducer(
             mapOf("$deviceId" to ENVIRONMENT),
-            hubitatClient(Device(deviceId, "Foodevice", listOf(Device.Attribute("power", "9", NUMBER))))
+            hubitatClient(HubitatDevice(deviceId, "Foodevice", listOf(HubitatDevice.Attribute("power", "9", NUMBER))))
         )
         val actual = runBlocking { hubitatUpdateProducer.sensors() }
         assertEquals(0, actual.size)
@@ -57,7 +57,7 @@ internal class HubitatUpdateProducerTest {
     fun sensorValues_NullPowerAmount() {
         val hubitatUpdateProducer = HubitatUpdateProducer(
             mapOf("$deviceId" to POWER),
-            hubitatClient(Device(deviceId, "Foodevice", listOf(Device.Attribute("power", null, NUMBER))))
+            hubitatClient(HubitatDevice(deviceId, "Foodevice", listOf(HubitatDevice.Attribute("power", null, NUMBER))))
         )
         val actual = runBlocking { hubitatUpdateProducer.sensors() }
         assertEquals(0, actual.size)
