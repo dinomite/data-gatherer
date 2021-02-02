@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.common.eventbus.EventBus
 import com.google.inject.Inject
-import net.dinomite.gatherer.awair.AwairClient
+import net.dinomite.gatherer.awair.AsyncAwairClient
 import net.dinomite.gatherer.awair.AwairUpdateProducer
 import net.dinomite.gatherer.dp.AsyncDataProducerClient
 import net.dinomite.gatherer.dp.DataProducerUpdateProducer
@@ -45,7 +45,11 @@ class AwairToEmonReportingService
         eventBus,
         AwairUpdateProducer(
             config.awairDeviceIds,
-            AwairClient(objectMapper, config)
+            AsyncAwairClient(
+                with(config) { "$awairScheme://$awairHost/$awairDeviceBasePath" },
+                config.awairAccessToken,
+                objectMapper
+            )
         )
     )
 
