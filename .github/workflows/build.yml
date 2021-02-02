@@ -23,7 +23,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew build jacocoTestReport
+      run: ./gradlew --parallel build jacocoTestReport
     - name: Cache Gradle packages
       uses: actions/cache@v2
       with:
