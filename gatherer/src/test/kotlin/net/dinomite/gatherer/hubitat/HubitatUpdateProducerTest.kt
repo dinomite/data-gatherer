@@ -23,9 +23,10 @@ internal class HubitatUpdateProducerTest {
             mapOf("$deviceId" to POWER),
             hubitatClient(HubitatDevice(deviceId, "Foodevice", listOf(HubitatDevice.Attribute("power", "9", NUMBER))))
         )
-        val actual = runBlocking { hubitatUpdateProducer.sensors() }
-        assertEquals(1, actual.size)
 
+        val actual = runBlocking { hubitatUpdateProducer.sensors() }
+
+        assertEquals(1, actual.size)
         val expected = Sensor(ENERGY, "foodevice_power", Observation(9.0))
         val sensor = actual.first()
         assertEquals(expected.group, sensor.group)
@@ -39,7 +40,9 @@ internal class HubitatUpdateProducerTest {
             mapOf("$deviceId" to ENVIRONMENT),
             hubitatClient(HubitatDevice(deviceId, "Foodevice", listOf(HubitatDevice.Attribute("power", "9", NUMBER))))
         )
+
         val actual = runBlocking { hubitatUpdateProducer.sensors() }
+
         assertEquals(0, actual.size)
     }
 
@@ -49,7 +52,9 @@ internal class HubitatUpdateProducerTest {
             mapOf("$deviceId" to POWER),
             hubitatClient(null)
         )
+
         val actual = runBlocking { hubitatUpdateProducer.sensors() }
+
         assertEquals(0, actual.size)
     }
 
@@ -59,7 +64,9 @@ internal class HubitatUpdateProducerTest {
             mapOf("$deviceId" to POWER),
             hubitatClient(HubitatDevice(deviceId, "Foodevice", listOf(HubitatDevice.Attribute("power", null, NUMBER))))
         )
+
         val actual = runBlocking { hubitatUpdateProducer.sensors() }
+
         assertEquals(0, actual.size)
     }
 }

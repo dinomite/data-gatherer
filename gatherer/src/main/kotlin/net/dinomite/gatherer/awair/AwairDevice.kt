@@ -10,6 +10,8 @@ data class AwairDevice(val data: List<AwairData>) {
             ?.firstOrNull { it.comp == comp }
             ?.value
     }
+
+    fun timestamp(): Instant? = data.firstOrNull()?.timestamp
 }
 
 data class AwairData(val timestamp: Instant, val score: Int, val sensors: List<AwairSensor>)

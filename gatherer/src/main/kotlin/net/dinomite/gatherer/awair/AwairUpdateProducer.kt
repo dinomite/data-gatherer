@@ -6,8 +6,10 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import net.dinomite.gatherer.model.Group.ENVIRONMENT
 import net.dinomite.gatherer.model.Observation
+import net.dinomite.gatherer.model.Sensor
 import net.dinomite.gatherer.services.UpdateProducer
 import org.slf4j.LoggerFactory
+import java.time.Instant
 
 /**
  * Pulls environment information from Awair and packages into an EmonUpdate
@@ -17,7 +19,7 @@ class AwairUpdateProducer(private val devices: List<String>,
     /**
      * Retrieve environment information from each Awair device
      */
-    override suspend fun sensors(): List<net.dinomite.gatherer.model.Sensor> {
+    override suspend fun sensors(): List<Sensor> {
         return retrieveDevices()
                 .map { (deviceId, device) ->
                     if (device == null) {
@@ -31,10 +33,10 @@ class AwairUpdateProducer(private val devices: List<String>,
                                 null
                             } else {
                                 logger.debug("${comp.name} for $deviceId: $value")
-                                net.dinomite.gatherer.model.Sensor(
+                                Sensor(
                                         ENVIRONMENT,
                                         "awair_${deviceId}_${comp.name.toLowerCase()}",
-                                        Observation(value)
+                                        Observation(value, device.timestamp() ?: Instant.now())
                                 )
                             }
                         }
