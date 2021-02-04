@@ -14,43 +14,45 @@ import java.time.Instant
 /**
  * Pulls environment information from Awair and packages into an EmonUpdate
  */
-class AwairUpdateProducer(private val devices: List<String>,
-                          private val awairClient: AwairClient) : UpdateProducer {
+class AwairUpdateProducer(
+    private val devices: List<String>,
+    private val awairClient: AwairClient
+) : UpdateProducer {
     /**
      * Retrieve environment information from each Awair device
      */
     override suspend fun sensors(): List<Sensor> {
         return retrieveDevices()
-                .map { (deviceId, device) ->
-                    if (device == null) {
-                        logger.warn("Dropping update for $deviceId because it is null")
-                        null
-                    } else {
-                        AwairSensor.Comp.values().map { comp ->
-                            val value = device.sensorValue(comp)
-                            if (value == null) {
-                                logger.warn("${comp.name} value for <$deviceId> is null")
-                                null
-                            } else {
-                                logger.debug("${comp.name} for $deviceId: $value")
-                                Sensor(
-                                        ENVIRONMENT,
-                                        "awair_${deviceId}_${comp.name.toLowerCase()}",
-                                        Observation(value, device.timestamp() ?: Instant.now())
-                                )
-                            }
+            .map { (deviceId, device) ->
+                if (device == null) {
+                    logger.warn("Dropping update for $deviceId because it is null")
+                    null
+                } else {
+                    AwairSensor.Comp.values().map { comp ->
+                        val value = device.sensorValue(comp)
+                        if (value == null) {
+                            logger.warn("${comp.name} value for <$deviceId> is null")
+                            null
+                        } else {
+                            logger.debug("${comp.name} for $deviceId: $value")
+                            Sensor(
+                                ENVIRONMENT,
+                                "awair_${deviceId}_${comp.name.toLowerCase()}",
+                                Observation(value, device.timestamp() ?: Instant.now())
+                            )
                         }
                     }
                 }
-                .filterNotNull()
-                .flatten()
-                .filterNotNull()
+            }
+            .filterNotNull()
+            .flatten()
+            .filterNotNull()
     }
 
     private suspend fun retrieveDevices(): Map<String, AwairDevice?> = withContext(Dispatchers.IO) {
         devices.map { deviceId -> async { deviceId to awairClient.retrieveDevice(deviceId) } }
-                .awaitAll()
-                .toMap()
+            .awaitAll()
+            .toMap()
     }
 
     companion object {
