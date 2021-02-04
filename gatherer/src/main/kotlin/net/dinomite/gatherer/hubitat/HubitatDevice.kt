@@ -6,13 +6,15 @@ import net.dinomite.gatherer.model.Group
 data class HubitatDevice(val id: Int, val name: String, val attributes: List<Attribute>) {
     val reportingName by lazy { name.replace(' ', '_').toLowerCase() }
 
-    fun attribute(name: String) = attributes.first { it.name == name }
+    fun attribute(name: String): Attribute = attributes.first { it.name == name }
 
-    fun identity() = "$id—$name"
+    fun identity(): String = "$id—$name"
 
-    data class Attribute(val name: String,
-                         val currentValue: String?,
-                         val dataType: DataType) {
+    data class Attribute(
+        val name: String,
+        val currentValue: String?,
+        val dataType: DataType
+    ) {
         enum class DataType {
             NUMBER,
             STRING,
@@ -20,7 +22,8 @@ data class HubitatDevice(val id: Int, val name: String, val attributes: List<Att
             DATE
         }
 
-        fun Value(): Double? {
+        fun value(): Double? {
+            // Only deal in numeric values for now
             if (dataType != NUMBER) {
                 throw IllegalAccessError("DataType is $dataType, not $NUMBER")
             }

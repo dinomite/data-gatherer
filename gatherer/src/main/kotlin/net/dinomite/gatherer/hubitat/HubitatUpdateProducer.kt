@@ -39,7 +39,7 @@ class HubitatUpdateProducer(private val devices: Map<String, HubitatDeviceType>,
     }
 
     private fun powerDevice(device: HubitatDevice): Sensor? {
-        val power = device.attribute("power").Value()
+        val power = device.attribute("power").value()
         return if (power == null) {
             logger.warn("Power value for <${device.identity()}> is null")
             null
