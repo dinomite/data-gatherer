@@ -59,7 +59,7 @@ fun main(args: Array<String>) {
     val serviceManager = ServiceManager(
         listOf(
             injector.getInstance(HubitatReportingService::class.java),
-            injector.getInstance(AwairToEmonReportingService::class.java),
+            injector.getInstance(AwairReportingService::class.java),
             injector.getInstance(DataProducerReportingService::class.java)
         )
     )
@@ -87,7 +87,7 @@ fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): Injector
                 bind(InfluxDbReporter::class.java)
 
                 bind(HubitatReportingService::class.java)
-                bind(AwairToEmonReportingService::class.java)
+                bind(AwairReportingService::class.java)
                 bind(DataProducerReportingService::class.java)
 
                 bind(ObjectMapper::class.java).toInstance(objectMapper)
