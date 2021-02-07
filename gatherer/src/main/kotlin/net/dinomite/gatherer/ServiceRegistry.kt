@@ -34,7 +34,7 @@ class HubitatReportingService
         )
     )
 
-class AwairToEmonReportingService
+class AwairReportingService
 @Inject constructor(
     objectMapper: ObjectMapper,
     config: DataGathererConfig,
