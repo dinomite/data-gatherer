@@ -16,12 +16,6 @@ class DataGathererConfig(config: CompositeConfiguration) {
     val emonInputBasePath: String = config.getString("EMON_INPUT_BASE_PATH")
     val emonApiKey: String = config.getString("EMON_API_KEY")
 
-    val hubitatScheme: String = config.getString("HUBITAT_SCHEME")
-    val hubitatHost: String = config.getString("HUBITAT_HOST")
-    val hubitatDeviceBasePath: String = config.getString("HUBITAT_DEVICE_BASE_PATH")
-    val hubitatDevices: String = config.getList("HUBITAT_DEVICES").joinToString()
-    val hubitatAccessToken: String = config.getString("HUBITAT_ACCESS_TOKEN")
-
     val influxDbUrl: String = config.getString("INFLUXDB_URL")
     val influxDbUsername: String = config.getString("INFLUXDB_USERNAME")
     val influxDbPassword: String = config.getString("INFLUXDB_PASSWORD")

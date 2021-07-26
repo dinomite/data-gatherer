@@ -58,7 +58,6 @@ fun main(args: Array<String>) {
     // Create the producers which are periodically runnin Services
     val serviceManager = ServiceManager(
         listOf(
-            injector.getInstance(HubitatReportingService::class.java),
             injector.getInstance(AwairReportingService::class.java),
             injector.getInstance(DataProducerReportingService::class.java)
         )
@@ -86,7 +85,6 @@ fun setupGuice(objectMapper: ObjectMapper, config: DataGathererConfig): Injector
 
                 bind(InfluxDbReporter::class.java)
 
-                bind(HubitatReportingService::class.java)
                 bind(AwairReportingService::class.java)
                 bind(DataProducerReportingService::class.java)
 

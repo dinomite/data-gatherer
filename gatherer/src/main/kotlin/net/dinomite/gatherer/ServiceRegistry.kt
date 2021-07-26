@@ -10,29 +10,8 @@ import net.dinomite.gatherer.awair.AsyncAwairClient
 import net.dinomite.gatherer.awair.AwairUpdateProducer
 import net.dinomite.gatherer.dp.AsyncDataProducerClient
 import net.dinomite.gatherer.dp.DataProducerUpdateProducer
-import net.dinomite.gatherer.hubitat.AsyncHubitatClient
-import net.dinomite.gatherer.hubitat.HubitatUpdateProducer
 import net.dinomite.gatherer.services.EventBusScheduledService
 import java.time.Duration
-
-class HubitatReportingService
-@Inject constructor(
-    objectMapper: ObjectMapper,
-    config: DataGathererConfig,
-    eventBus: EventBus
-) :
-    EventBusScheduledService(
-        Duration.ofMinutes(1),
-        eventBus,
-        HubitatUpdateProducer(
-            objectMapper.readValue(config.hubitatDevices),
-            AsyncHubitatClient(
-                with(config) { "$hubitatScheme://$hubitatHost/$hubitatDeviceBasePath" },
-                config.hubitatAccessToken,
-                objectMapper
-            )
-        )
-    )
 
 class AwairReportingService
 @Inject constructor(
