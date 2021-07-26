@@ -16,11 +16,13 @@ data class RtlData(
         @JsonProperty("temperature_C") val temperatureC: Double?,
         @JsonProperty("humidity") val humidity: Int?
 ) {
-    private fun sensorKey(subSensor: String) = if (brand != null) {
-        "$brand-$model-$id-$subSensor"
+    fun sensorName(): String = if (brand != null) {
+        "$brand-$model-$id"
     } else {
-        "$model-$id-$subSensor"
+        "$model-$id"
     }
+
+    private fun sensorKey(subSensor: String) = "${sensorName()}-$subSensor"
 
     fun toSensorUpdates(): List<SensorUpdate<*>> {
         return mutableListOf<SensorUpdate<*>>().apply {

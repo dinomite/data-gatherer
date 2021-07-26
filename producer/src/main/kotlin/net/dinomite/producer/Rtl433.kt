@@ -6,14 +6,19 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.http.*
-import io.ktor.jackson.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.features.CallLogging
+import io.ktor.features.ContentNegotiation
+import io.ktor.features.StatusPages
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.jackson.JacksonConverter
+import io.ktor.response.respond
+import io.ktor.routing.Routing
+import io.ktor.routing.get
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 import net.dinomite.gatherer.config.buildConfiguration
 import net.dinomite.producer.model.DataProducerResponse
 import net.dinomite.producer.model.RtlData
@@ -42,10 +47,10 @@ object Rtl433 {
 
         val jacksonFuture = CompletableFuture.supplyAsync {
             jacksonObjectMapper()
-                    .registerModule(JavaTimeModule())
-                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .registerModule(JavaTimeModule())
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         }
-        val config = CompletableFuture.supplyAsync {
+        val configFuture = CompletableFuture.supplyAsync {
             buildConfiguration(args, USAGE) { Rtl433Config(it) }
         }
 
@@ -76,17 +81,24 @@ object Rtl433 {
 
         logger.info("Startup time: ${Duration.between(start, Instant.now())}")
 
-        val input = runCommand(config.get().rtl433Command)
-        input.forEachLine { line ->
-            try {
+        val config = configFuture.get()
+        val sensorAllowList = config.allowedSensors(objectMapper)
+
+        for (line in runCommand(config.rtl433Command).lines()) {
+            val rtlData = try {
                 objectMapper.readValue<RtlData>(line)
-                        .toSensorUpdates()
-                        .forEach {
-                            nodeDataManager.updateNode(it)
-                        }
-                logger.debug(nodeDataManager.getValues().toString())
             } catch (e: JsonProcessingException) {
                 logger.warn("Couldn't process JSON", e)
+                continue
+            }
+
+            if (sensorAllowList.contains(rtlData.sensorName())) {
+                rtlData
+                    .toSensorUpdates()
+                    .forEach {
+                        nodeDataManager.updateNode(it)
+                    }
+                logger.debug(nodeDataManager.getValues().toString())
             }
         }
     }
@@ -94,9 +106,9 @@ object Rtl433 {
 
 fun runCommand(command: String): BufferedReader {
     return ProcessBuilder(*command.split("\\s".toRegex()).toTypedArray())
-            .redirectOutput(ProcessBuilder.Redirect.PIPE)
-            .redirectError(ProcessBuilder.Redirect.PIPE)
-            .start()
-            .inputStream
-            .bufferedReader()
+        .redirectOutput(ProcessBuilder.Redirect.PIPE)
+        .redirectError(ProcessBuilder.Redirect.PIPE)
+        .start()
+        .inputStream
+        .bufferedReader()
 }
