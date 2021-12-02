@@ -13,7 +13,7 @@ loggingCapabilities {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 subprojects {
@@ -22,7 +22,7 @@ subprojects {
     apply(plugin = "jacoco")
 
     repositories {
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {

@@ -19,7 +19,7 @@ dependencies {
 
     implementation("com.google.guava:guava:30.1-jre")
 
-    implementation("org.mpierce.guice.warmup:guice-warmup:0.1")
+    implementation("org.mpierce.guice.warmup:guice-warmup:0.2")
     implementation("com.google.inject:guice:4.2.3")
 
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.12.5")

@@ -37,7 +37,7 @@ class AwairUpdateProducer(
                             logger.debug("${comp.name} for $deviceId: $value")
                             Sensor(
                                 ENVIRONMENT,
-                                "awair_${deviceId}_${comp.name.toLowerCase()}",
+                                "awair_${deviceId}_${comp.name.lowercase()}",
                                 Observation(value, device.timestamp() ?: Instant.now())
                             )
                         }
