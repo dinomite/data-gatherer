@@ -6,7 +6,7 @@ enum class Group {
     ENERGY,
     ENVIRONMENT;
 
-    fun reportingValue() = this.name.toLowerCase()
+    fun reportingValue() = this.name.lowercase()
 
     companion object {
         fun fromString(string: String) = values().firstOrNull { it.name.equals(string, true) }
