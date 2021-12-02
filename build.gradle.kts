@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.30"
+    kotlin("jvm") version "1.6.0"
     java
     id("com.github.ben-manes.versions") version "0.39.0"
     id("dev.jacomet.logging-capabilities") version "0.9.0"
