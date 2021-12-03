@@ -31,7 +31,7 @@ dependencies {
     implementation("org.influxdb:influxdb-java:2.21")
 
     testImplementation("com.github.tomakehurst:wiremock:2.27.2")
-    testImplementation("io.mockk:mockk:1.10.5")
+    testImplementation("io.mockk:mockk:1.12.1")
     testImplementation("io.apisense.embed.influx:embed-influxDB:1.2.1") {
         exclude("org.slf4j", "slf4j-log4j12")
     }
