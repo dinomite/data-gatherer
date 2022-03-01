@@ -17,7 +17,7 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
     implementation("com.github.kittinunf.fuel:fuel-jackson:2.3.1")
 
-    implementation("com.google.guava:guava:30.1-jre")
+    implementation("com.google.guava:guava:31.1-jre")
 
     implementation("org.mpierce.guice.warmup:guice-warmup:0.2")
     implementation("com.google.inject:guice:4.2.3")
