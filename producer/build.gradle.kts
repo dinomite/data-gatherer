@@ -8,7 +8,7 @@ dependencies {
 
     implementation("io.ktor:ktor-server-core:1.4.1")
     implementation("io.ktor:ktor-server-netty:1.4.1")
-    implementation("io.ktor:ktor-jackson:1.4.1")
+    implementation("io.ktor:ktor-jackson:1.6.8")
 
     runtimeOnly("ch.qos.logback:logback-classic:1.2.3")
 
