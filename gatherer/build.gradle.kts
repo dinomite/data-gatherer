@@ -9,7 +9,7 @@ dependencies {
     runtimeOnly("commons-beanutils:commons-beanutils:1.9.4")
     implementation(project(":model"))
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
