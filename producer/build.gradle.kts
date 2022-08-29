@@ -10,7 +10,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:1.4.1")
     implementation("io.ktor:ktor-jackson:1.4.1")
 
-    runtimeOnly("ch.qos.logback:logback-classic:1.2.3")
+    runtimeOnly("ch.qos.logback:logback-classic:1.4.0")
 
     implementation("org.apache.commons:commons-configuration2:2.7")
     implementation("commons-beanutils:commons-beanutils:1.9.4")
