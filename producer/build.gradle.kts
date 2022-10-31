@@ -6,7 +6,7 @@ dependencies {
     implementation(project(":config"))
     implementation(project(":model"))
 
-    implementation("io.ktor:ktor-server-core:1.4.1")
+    implementation("io.ktor:ktor-server-core:2.1.3")
     implementation("io.ktor:ktor-server-netty:1.4.1")
     implementation("io.ktor:ktor-jackson:1.4.1")
 
